@@ -1,22 +1,26 @@
-app.views.ListFocus = class ListFocus extends app.View {
-  static initClass() {
-    this.activeClass = 'focus';
+import View from '../view';
 
-    this.events = {
-      click: 'onClick'
-    };
+import ListFold from './list_fold';
+import ListSelect from './list_select';
 
-    this.shortcuts = {
-      up: 'onUp',
-      down: 'onDown',
-      left: 'onLeft',
-      enter: 'onEnter',
-      superEnter: 'onSuperEnter',
-      escape: 'blur'
-    };
+export default class ListFocus extends View {
 
-    return this;
-  }
+  static activeClass = 'focus';
+
+  static events = {
+    click: 'onClick'
+  };
+
+  static shortcuts = {
+    up: 'onUp',
+    down: 'onDown',
+    left: 'onLeft',
+    enter: 'onEnter',
+    superEnter: 'onSuperEnter',
+    escape: 'blur'
+  };
+
+
 
   constructor(el) {
     super(...arguments);
@@ -29,7 +33,7 @@ app.views.ListFocus = class ListFocus extends app.View {
     this.onSuperEnter = this.onSuperEnter.bind(this);
     this.onClick = this.onClick.bind(this);
     this.el = el;
-   
+
     this.focusOnNextFrame = $.framify(this.focus, this);
   }
 
@@ -55,7 +59,7 @@ app.views.ListFocus = class ListFocus extends app.View {
   }
 
   getCursor() {
-    return this.findByClass(this.constructor.activeClass) || this.findByClass(app.views.ListSelect.activeClass);
+    return this.findByClass(this.constructor.activeClass) || this.findByClass(ListSelect.activeClass);
   }
 
   findNext(cursor) {
@@ -151,9 +155,9 @@ app.views.ListFocus = class ListFocus extends app.View {
 
   onLeft() {
     const cursor = this.getCursor();
-    if (cursor && !cursor.classList.contains(app.views.ListFold.activeClass) && (cursor.parentNode !== this.el)) {
+    if (cursor && !cursor.classList.contains(ListFold.activeClass) && (cursor.parentNode !== this.el)) {
       const prev = cursor.parentNode.previousSibling;
-      if (prev && prev.classList.contains(app.views.ListFold.targetClass)) {
+      if (prev && prev.classList.contains(ListFold.targetClass)) {
         this.focusOnNextFrame(cursor.parentNode.previousSibling);
       }
     }
@@ -184,4 +188,4 @@ app.views.ListFocus = class ListFocus extends app.View {
       });
     }
   }
-}.initClass();
+}

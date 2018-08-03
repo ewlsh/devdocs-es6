@@ -1,33 +1,28 @@
-(function () {
-  let GUIDES_RGX = undefined;
-  let APPENDIX_RGX = undefined;
-  const Cls = (app.collections.Types = class Types extends app.Collection {
-    static initClass() {
-      this.model = 'Type';
+import Collection from './collection';
 
-      GUIDES_RGX = /(^|\()(guides?|tutorials?|reference|book|getting\ started|manual|examples)($|[\):])/i;
-      APPENDIX_RGX = /appendix/i;
-    }
+export default class Types extends Collection {
 
-    groups() {
-      const result = [];
-      for (let type of this.models) {
-        var name;
-        (result[name = this._groupFor(type)] || (result[name] = [])).push(type);
-      }
-      return result.filter(e => e.length > 0);
-    }
+  static model = 'Type';
 
-    _groupFor(type) {
-      if (GUIDES_RGX.test(type.name)) {
-        return 0;
-      } else if (APPENDIX_RGX.test(type.name)) {
-        return 2;
-      } else {
-        return 1;
-      }
+  static GUIDES_RGX = /(^|\()(guides?|tutorials?|reference|book|getting\ started|manual|examples)($|[\):])/i;
+  static APPENDIX_RGX = /appendix/i;
+
+  groups() {
+    const result = [];
+    for (let type of this.models) {
+      var name;
+      (result[name = this._groupFor(type)] || (result[name] = [])).push(type);
     }
-  });
-  Cls.initClass();
-  return Cls;
-})();
+    return result.filter(e => e.length > 0);
+  }
+
+  _groupFor(type) {
+    if (GUIDES_RGX.test(type.name)) {
+      return 0;
+    } else if (APPENDIX_RGX.test(type.name)) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+}

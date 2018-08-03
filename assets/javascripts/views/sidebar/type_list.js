@@ -1,15 +1,16 @@
-app.views.TypeList = class TypeList extends app.View {
-  static initClass() {
-    this.tagName = 'div';
-    this.className = '_list _list-sub';
+import View from '../view';
 
-    this.events = {
-      open: 'onOpen',
-      close: 'onClose'
-    };
+import EntryList from './entry_list';
 
-    return this;
-  }
+export default class TypeList extends View {
+
+  static tagName = 'div';
+  static className = '_list _list-sub';
+
+  static events = {
+    open: 'onOpen',
+    close: 'onClose'
+  };
 
   constructor(doc) {
     super(...arguments);
@@ -54,7 +55,7 @@ app.views.TypeList = class TypeList extends app.View {
     const type = this.doc.types.findBy('slug', event.target.getAttribute('data-slug'));
 
     if (type && !this.lists[type.slug]) {
-      this.lists[type.slug] = new app.views.EntryList(type.entries());
+      this.lists[type.slug] = new EntryList(type.entries());
       $.after(event.target, this.lists[type.slug].el);
     }
   }
@@ -78,4 +79,4 @@ app.views.TypeList = class TypeList extends app.View {
       }
     }
   }
-}.initClass();
+}

@@ -1,17 +1,20 @@
-app.views.Results = class Results extends app.View {
-  static initClass() {
-    this.className = '_list';
+import View from '../view'
+import ListFocus from '../list/list_focus';
+import ListFold from '../list/list_fold';
+import ListSelect from '../list/list_select';
+import { App } from '../../app/app';
 
-    this.events = {
-      click: 'onClick'
-    };
+export default class Results extends View {
+  static className = '_list';
 
-    this.routes = {
-      after: 'afterRoute'
-    };
+  static events = {
+    click: 'onClick'
+  };
 
-    return this;
-  }
+  static routes = {
+    after: 'afterRoute'
+  };
+
 
   constructor(sidebar, search) {
     super(...arguments);
@@ -24,8 +27,8 @@ app.views.Results = class Results extends app.View {
     this.sidebar = sidebar;
     this.search = search;
 
-    this.addSubview(this.listFocus = new app.views.ListFocus(this.el));
-    this.addSubview(this.listSelect = new app.views.ListSelect(this.el));
+    this.addSubview(this.listFocus = new ListFocus(this.el));
+    this.addSubview(this.listSelect = new ListSelect(this.el));
 
     this.search
       .on('results', this.onResults)
@@ -68,7 +71,7 @@ app.views.Results = class Results extends app.View {
   }
 
   focusFirst() {
-    if (!app.isMobile()) {
+    if (!App.isMobile()) {
       if (this.listFocus != null) {
         this.listFocus.focusOnNextFrame(this.el.firstElementChild);
       }
@@ -82,7 +85,7 @@ app.views.Results = class Results extends app.View {
   }
 
   onDocEnabled(doc) {
-    app.router.show(doc.fullPath());
+    App.router.show(doc.fullPath());
     return this.sidebar.onDocEnabled();
   }
 
@@ -101,10 +104,10 @@ app.views.Results = class Results extends app.View {
     }
     if (slug = $.eventTarget(event).getAttribute('data-enable')) {
       $.stopEvent(event);
-      const doc = app.disabledDocs.findBy('slug', slug);
+      const doc = App.disabledDocs.findBy('slug', slug);
       if (doc) {
-        return app.enableDoc(doc, this.onDocEnabled.bind(this, doc), $.noop);
+        return App.enableDoc(doc, this.onDocEnabled.bind(this, doc), $.noop);
       }
     }
   }
-}.initClass();
+}

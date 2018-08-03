@@ -1,4 +1,7 @@
-app.views.RootPage = class RootPage extends app.View {
+import View from '../view';
+import { App } from '../../app/app';
+
+export default class RootPage extends View {
   constructor(...args) {
     super(...args);
 
@@ -11,22 +14,18 @@ app.views.RootPage = class RootPage extends app.View {
     this.render();
   }
 
-  static initClass() {
-    this.events = {
-      click: 'onClick'
-    };
-
-    return this;
-  }
+  static events = {
+    click: 'onClick'
+  };
 
   render() {
     this.empty();
 
-    let tmpl = app.isAndroidWebview() ?
+    let tmpl = App.isAndroidWebview() ?
       'androidWarning' :
       this.isHidden() ?
       'splash' :
-      app.isMobile() ?
+      App.isMobile() ?
       'mobileIntro' :
       'intro';
 
@@ -44,11 +43,11 @@ app.views.RootPage = class RootPage extends app.View {
   }
 
   setHidden(value) {
-    app.settings.set('hideIntro', value);
+    App.settings.set('hideIntro', value);
   }
 
   isHidden() {
-    return app.isSingleDoc() || app.settings.get('hideIntro');
+    return App.isSingleDoc() || App.settings.get('hideIntro');
   }
 
   onRoute() {}
@@ -59,4 +58,4 @@ app.views.RootPage = class RootPage extends app.View {
       this.hideIntro();
     }
   }
-}.initClass();
+}

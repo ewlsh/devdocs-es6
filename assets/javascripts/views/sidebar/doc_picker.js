@@ -1,4 +1,7 @@
-app.views.DocPicker = class DocPicker extends app.View {
+import View from '../view'
+import ListFold from '../list/list_fold';
+
+export default class DocPicker extends View {
   constructor(...args) {
     super(...args);
 
@@ -6,19 +9,17 @@ app.views.DocPicker = class DocPicker extends app.View {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onDOMFocus = this.onDOMFocus.bind(this);
 
-    this.addSubview(this.listFold = new app.views.ListFold(this.el));
+    this.addSubview(this.listFold = new ListFold(this.el));
   }
 
-  static initClass() {
-    this.className = '_list _list-picker';
 
-    this.events = {
-      mousedown: 'onMouseDown',
-      mouseup: 'onMouseUp'
-    };
+  static className = '_list _list-picker';
 
-    return this;
-  }
+  static events = {
+    mousedown: 'onMouseDown',
+    mouseup: 'onMouseUp'
+  };
+
 
   activate() {
     if (super.activate(...arguments)) {
@@ -38,18 +39,18 @@ app.views.DocPicker = class DocPicker extends app.View {
   render() {
     let doc;
     let html = this.tmpl('docPickerHeader');
-    let docs = app.docs.all().concat(...Array.from(app.disabledDocs.all() || []));
+    let docs = App.docs.all().concat(...Array.from(App.disabledDocs.all() || []));
 
     while ((doc = docs.shift())) {
       if (doc.version != null) {
         let versions;
         [docs, versions] = Array.from(this.extractVersions(docs, doc));
         html += this.tmpl('sidebarVersionedDoc', doc, this.renderVersions(versions), {
-          open: app.docs.contains(doc)
+          open: App.docs.contains(doc)
         });
       } else {
         html += this.tmpl('sidebarLabel', doc, {
-          checked: app.docs.contains(doc)
+          checked: App.docs.contains(doc)
         });
       }
     }
@@ -68,7 +69,7 @@ app.views.DocPicker = class DocPicker extends app.View {
     let html = '';
     for (let doc of docs) {
       html += this.tmpl('sidebarLabel', doc, {
-        checked: app.docs.contains(doc)
+        checked: App.docs.contains(doc)
       });
     }
     return html;
@@ -109,23 +110,23 @@ app.views.DocPicker = class DocPicker extends app.View {
       if ((!this.mouseDown || !(Date.now() < (this.mouseDown + 100))) && (!this.mouseUp || !(Date.now() < (this.mouseUp + 100)))) {
         $.scrollTo(target.parentNode, null, 'continuous');
       }
-    } else if (target.classList.contains(app.views.ListFold.targetClass)) {
+    } else if (target.classList.contains(ListFold.targetClass)) {
       target.blur();
       if (!this.mouseDown || !(Date.now() < (this.mouseDown + 100))) {
         if (this.focusEl === $('input', target.nextElementSibling)) {
-          if (target.classList.contains(app.views.ListFold.activeClass)) {
+          if (target.classList.contains(ListFold.activeClass)) {
             this.listFold.close(target);
           }
           let prev = target.previousElementSibling;
-          while ((prev.tagName !== 'LABEL') && !prev.classList.contains(app.views.ListFold.targetClass)) {
+          while ((prev.tagName !== 'LABEL') && !prev.classList.contains(ListFold.targetClass)) {
             prev = prev.previousElementSibling;
           }
-          if (prev.classList.contains(app.views.ListFold.activeClass)) {
+          if (prev.classList.contains(ListFold.activeClass)) {
             prev = $.makeArray($$('input', prev.nextElementSibling)).pop();
           }
           this.delay(() => prev.focus());
         } else {
-          if (!target.classList.contains(app.views.ListFold.activeClass)) {
+          if (!target.classList.contains(ListFold.activeClass)) {
             this.listFold.open(target);
           }
           this.delay(() => $('input', target.nextElementSibling).focus());
@@ -134,4 +135,4 @@ app.views.DocPicker = class DocPicker extends app.View {
     }
     this.focusEl = target;
   }
-}.initClass();
+}

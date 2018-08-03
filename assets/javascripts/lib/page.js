@@ -3,23 +3,23 @@
  * Licensed under the MIT license
  * Copyright 2012 TJ Holowaychuk <tj@vision-media.ca>
  */
-{
+// TODO Fix this messy comma function hack
+let page;
+export default (page = function page(value, fn) {
+  if (typeof value === 'function') {
+    page('*', value);
+  } else if (typeof fn === 'function') {
+    const route = new page._Route(value);
+    page._callbacks.push(route.middleware(fn));
+  } else if (typeof value === 'string') {
+    page.show(value, fn);
+  } else {
+    page.start(value);
+  }
+}, function () {
   let running = false;
   let currentState = null;
-  const callbacks = [];
-
-  this.page = function (value, fn) {
-    if (typeof value === 'function') {
-      page('*', value);
-    } else if (typeof fn === 'function') {
-      const route = new Route(value);
-      callbacks.push(route.middleware(fn));
-    } else if (typeof value === 'string') {
-      page.show(value, fn);
-    } else {
-      page.start(value);
-    }
-  };
+  page._callbacks = [];
 
   page.start = function (options) {
     if (options == null) {
@@ -86,7 +86,7 @@
     let i = 0;
     var next = function () {
       let fn, res;
-      if (fn = callbacks[i++]) {
+      if (fn = page._callbacks[i++]) {
         res = fn(context, next);
       }
       return res;
@@ -100,12 +100,11 @@
 
   var currentPath = () => location.pathname + location.search + location.hash;
 
-  class Context {
-    static initClass() {
-      this.initialPath = currentPath();
-      this.sessionId = Date.now();
-      this.stateId = 0;
-    }
+  page._Context = class Context {
+
+    static initialPath = currentPath();
+    static sessionId = Date.now();
+    static stateId = 0;
 
     static isIntialState(state) {
       return state.id === 0;
@@ -157,9 +156,8 @@
       } catch (error) {} // NS_ERROR_FAILURE in Firefox
     }
   }
-  Context.initClass();
 
-  class Route {
+  page._Route = class Route {
     constructor(path, options) {
       this.path = path;
       if (options == null) {
@@ -297,4 +295,4 @@
       tracker.call();
     }
   };
-}
+}(), page);

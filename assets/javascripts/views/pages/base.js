@@ -1,7 +1,9 @@
-app.views.BasePage = class BasePage extends app.View {
+import View from '../view';
+
+export default class BasePage extends View {
   constructor(el, entry) {
     super(...arguments);
-    
+
     this.paintCode = this.paintCode.bind(this);
     this.el = el;
     this.entry = entry;

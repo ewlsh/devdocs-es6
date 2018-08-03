@@ -1,4 +1,7 @@
-app.Collection = class Collection {
+import Model from '../models/model';
+import { App } from '../app/app';
+
+export default class Collection {
   constructor(objects) {
     if (objects == null) {
       objects = [];
@@ -7,7 +10,7 @@ app.Collection = class Collection {
   }
 
   model() {
-    return app.models[this.constructor.model];
+    return App.models[this.constructor.model];
   }
 
   reset(objects) {
@@ -21,13 +24,13 @@ app.Collection = class Collection {
   }
 
   add(object) {
-    if (object instanceof app.Model) {
+    if (object instanceof Model) {
       this.models.push(object);
     } else if (object instanceof Array) {
       for (let obj of object) {
         this.add(obj);
       }
-    } else if (object instanceof app.Collection) {
+    } else if (object instanceof Collection) {
       this.models.push(...(object.all() || []));
     } else {
       this.models.push(new(this.model())(object));

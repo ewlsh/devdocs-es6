@@ -1,13 +1,9 @@
-require('./base');
+import BasePage from './base';
 
-app.views.RdocPage = class RdocPage extends app.views.BasePage {
-  static initClass() {
-    this.events = {
-      click: 'onClick'
-    };
-
-    return this;
-  }
+export default class RdocPage extends BasePage {
+  static events = {
+    click: 'onClick'
+  };
 
   onClick(event) {
     if (!event.target.classList.contains('method-click-advice')) {
@@ -21,4 +17,4 @@ app.views.RdocPage = class RdocPage extends app.views.BasePage {
     source.style.display = isShown ? 'none' : 'block';
     return event.target.textContent = isShown ? 'Show source' : 'Hide source';
   }
-}.initClass();
+}

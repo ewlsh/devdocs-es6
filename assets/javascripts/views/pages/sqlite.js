@@ -1,19 +1,16 @@
-require('./base');
+import BasePage from './base';
 
-app.views.SqlitePage = class SqlitePage extends app.views.BasePage {
+
+export default class SqlitePage extends BasePage {
   constructor(...args) {
     super(...args);
 
     this.onClick = this.onClick.bind(this);
   }
 
-  static initClass() {
-    this.events = {
-      click: 'onClick'
-    };
-
-    return this;
-  }
+  static events = {
+    click: 'onClick'
+  };
 
   onClick(event) {
     let el, id;
@@ -32,4 +29,4 @@ app.views.SqlitePage = class SqlitePage extends app.views.BasePage {
       event.target.textContent = 'show';
     }
   }
-}.initClass();
+}

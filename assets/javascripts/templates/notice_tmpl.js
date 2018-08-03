@@ -1,11 +1,17 @@
-{
-  const notice = text => `<p class="_notice-text">${text}</p>`;
+import { App } from '../app/app';
 
-  app.templates.singleDocNotice = doc =>
-    notice(` You're browsing the ${doc.fullName} documentation. To browse all docs, go to
-<a href="//${app.config.production_host}" target="_top">${app.config.production_host}</a> (or press <code>esc</code>). `);
+import {
+  addTemplates
+} from './base';
 
-  app.templates.disabledDocNotice = () =>
-    notice(` <strong>This documentation is disabled.</strong>
+const notice = text => `<p class="_notice-text">${text}</p>`;
+
+export let singleDocNotice = doc =>
+  notice(` You're browsing the ${doc.fullName} documentation. To browse all docs, go to
+<a href="//${App.config.production_host}" target="_top">${App.config.production_host}</a> (or press <code>esc</code>). `);
+
+export let disabledDocNotice = () =>
+  notice(` <strong>This documentation is disabled.</strong>
 To enable it, go to <a href="/settings" class="_notice-link">Preferences</a>. `);
-}
+
+addTemplates({singleDocNotice, disabledDocNotice});

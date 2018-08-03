@@ -1,4 +1,9 @@
-app.models.Doc = class Doc extends app.Model {
+import { App } from '../app/app';
+import Entry from './entry';
+
+import Model from './model';
+
+export default class Doc extends Model {
   // Attributes: name, slug, type, version, release, db_size, mtime, links
 
   constructor() {
@@ -19,14 +24,14 @@ app.models.Doc = class Doc extends app.Model {
   }
 
   resetEntries(entries) {
-    this.entries = new app.collections.Entries(entries);
+    this.entries = new Entries(entries);
     this.entries.each(entry => {
       return entry.doc = this;
     });
   }
 
   resetTypes(types) {
-    this.types = new app.collections.Types(types);
+    this.types = new Types(types);
     this.types.each(type => {
       return type.doc = this;
     });
@@ -43,22 +48,22 @@ app.models.Doc = class Doc extends app.Model {
   }
 
   fileUrl(path) {
-    return `${app.config.docs_origin}${this.fullPath(path)}?${this.mtime}`;
+    return `${App.config.docs_origin}${this.fullPath(path)}?${this.mtime}`;
   }
 
   dbUrl() {
-    return `${app.config.docs_origin}/${this.slug}/${app.config.db_filename}?${this.mtime}`;
+    return `${App.config.docs_origin}/${this.slug}/${App.config.db_filename}?${this.mtime}`;
   }
 
   indexUrl() {
-    return `${app.indexHost()}/${this.slug}/${app.config.index_filename}?${this.mtime}`;
+    return `${App.indexHost()}/${this.slug}/${App.config.index_filename}?${this.mtime}`;
   }
 
   toEntry() {
     if (this.entry) {
       return this.entry;
     }
-    this.entry = new app.models.Entry({
+    this.entry = new Entry({
       doc: this,
       name: this.fullName,
       path: 'index'
@@ -104,7 +109,7 @@ app.models.Doc = class Doc extends app.Model {
   }
 
   clearCache() {
-    app.localStorage.del(this.slug);
+    App.localStorage.del(this.slug);
   }
 
   _loadFromCache(onSuccess) {
@@ -124,7 +129,7 @@ app.models.Doc = class Doc extends app.Model {
 
   _getCache() {
     let data;
-    if (!(data = app.localStorage.get(this.slug))) {
+    if (!(data = App.localStorage.get(this.slug))) {
       return;
     }
 
@@ -137,7 +142,7 @@ app.models.Doc = class Doc extends app.Model {
   }
 
   _setCache(data) {
-    app.localStorage.set(this.slug, [this.mtime, data]);
+    App.localStorage.set(this.slug, [this.mtime, data]);
   }
 
   install(onSuccess, onError, onProgress) {
@@ -153,7 +158,7 @@ app.models.Doc = class Doc extends app.Model {
 
     const success = data => {
       this.installing = null;
-      app.db.store(this, data, onSuccess, error);
+      App.db.store(this, data, onSuccess, error);
     };
 
     ajax({
@@ -181,11 +186,11 @@ app.models.Doc = class Doc extends app.Model {
       onError();
     };
 
-    app.db.unstore(this, success, error);
+    App.db.unstore(this, success, error);
   }
 
   getInstallStatus(callback) {
-    app.db.version(this, value => callback({
+    App.db.version(this, value => callback({
       installed: !!value,
       mtime: value
     }));

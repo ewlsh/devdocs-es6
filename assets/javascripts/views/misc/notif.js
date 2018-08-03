@@ -1,21 +1,23 @@
-app.views.Notif = class Notif extends app.View {
-  static initClass() {
-    this.className = '_notif';
-    this.activeClass = '_in';
-    this.attributes = {
-      role: 'alert'
-    };
+import View from '../view';
 
-    this.defautOptions = {
-      autoHide: 15000
-    };
+import Util from '../../lib/util';
 
-    this.events = {
-      click: 'onClick'
-    };
+Util();
 
-    return this;
-  }
+export default class Notif extends View {
+  static className = '_notif';
+  static activeClass = '_in';
+  static attributes = {
+    role: 'alert'
+  };
+
+  static defautOptions = {
+    autoHide: 15000
+  };
+
+  static events = {
+    click: 'onClick'
+  };
 
   constructor(type, options) {
     super(...arguments);
@@ -59,7 +61,7 @@ app.views.Notif = class Notif extends app.View {
   }
 
   position() {
-    const notifications = $$(`.${app.views.Notif.className}`);
+    const notifications = $$(`.${Notif.className}`);
     if (notifications.length) {
       const lastNotif = notifications[notifications.length - 1];
       this.el.style.top = lastNotif.offsetTop + lastNotif.offsetHeight + 16 + 'px';
@@ -79,4 +81,4 @@ app.views.Notif = class Notif extends app.View {
       this.hide();
     }
   }
-}.initClass();
+}

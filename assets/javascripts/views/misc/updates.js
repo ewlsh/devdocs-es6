@@ -1,15 +1,14 @@
-require('../misc/notif');
+import Notif from '../misc/notif';
+import { App } from '../../app/app';
+import { notifUpdates } from '../../templates/notif_tmpl';
 
-app.views.Updates = class Updates extends app.views.Notif {
-  static initClass() {
-    this.className += ' _notif-news';
+export default class Updates extends Notif {
 
-    this.defautOptions = {
-      autoHide: 30000
-    };
+  static className = Updates.className + ' _notif-news';
 
-    return this;
-  }
+  static defautOptions = {
+    autoHide: 30000
+  };
 
   constructor(...args) {
     super(...args);
@@ -24,14 +23,14 @@ app.views.Updates = class Updates extends app.views.Notif {
   }
 
   render() {
-    this.html(app.templates.notifUpdates(this.updatedDocs, this.updatedDisabledDocs));
+    this.html(notifUpdates(this.updatedDocs, this.updatedDisabledDocs));
   }
 
   getUpdatedDocs() {
     if (!this.lastUpdateTime) {
       return [];
     }
-    return app.docs.all().filter((doc) => doc.mtime > this.lastUpdateTime);
+    return App.docs.all().filter((doc) => doc.mtime > this.lastUpdateTime);
   }
 
   getUpdatedDisabledDocs() {
@@ -40,8 +39,8 @@ app.views.Updates = class Updates extends app.views.Notif {
     }
     return (() => {
       const result = [];
-      for (let doc of app.disabledDocs.all()) {
-        if ((doc.mtime > this.lastUpdateTime) && app.docs.findBy('slug_without_version', doc.slug_without_version)) {
+      for (let doc of App.disabledDocs.all()) {
+        if ((doc.mtime > this.lastUpdateTime) && App.docs.findBy('slug_without_version', doc.slug_without_version)) {
           result.push(doc);
         }
       }
@@ -50,10 +49,10 @@ app.views.Updates = class Updates extends app.views.Notif {
   }
 
   getLastUpdateTime() {
-    return app.settings.get('version');
+    return App.settings.get('version');
   }
 
   markAllAsRead() {
-    app.settings.set('version', app.config.env === 'production' ? app.config.version : Math.floor(Date.now() / 1000));
+    App.settings.set('version', App.config.env === 'production' ? App.config.version : Math.floor(Date.now() / 1000));
   }
-}.initClass();
+}

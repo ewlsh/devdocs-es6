@@ -1,19 +1,25 @@
-{
-  app.templates.helpPage = function () {
-    let key, value;
-    const ctrlKey = $.isMac() ? 'cmd' : 'ctrl';
-    const navKey = $.isMac() ? 'cmd' : 'alt';
+import Entry from '../../models/entry';
 
-    const aliases_one = {};
-    const aliases_two = {};
-    const keys = Object.keys(app.models.Entry.ALIASES);
-    const middle = Math.ceil(keys.length / 2) - 1;
-    for (let i = 0; i < keys.length; i++) {
-      key = keys[i];
-      (i > middle ? aliases_two : aliases_one)[key] = app.models.Entry.ALIASES[key];
-    }
+import {
+  addTemplates
+} from '../base';
 
-    return `\
+
+export let helpPage = function () {
+  let key, value;
+  const ctrlKey = $.isMac() ? 'cmd' : 'ctrl';
+  const navKey = $.isMac() ? 'cmd' : 'alt';
+
+  const aliases_one = {};
+  const aliases_two = {};
+  const keys = Object.keys(Entry.ALIASES);
+  const middle = Math.ceil(keys.length / 2) - 1;
+  for (let i = 0; i < keys.length; i++) {
+    key = keys[i];
+    (i > middle ? aliases_two : aliases_one)[key] = Entry.ALIASES[key];
+  }
+
+  return `\
 <nav class="_toc" role="directory">
   <h3 class="_toc-title">Table of Contents</h3>
   <ul class="_toc-list">
@@ -171,5 +177,6 @@
 </div>
 <p>Feel free to suggest new aliases on <a href="https://github.com/freeCodeCamp/devdocs/issues/new">GitHub</a>.\
 `;
-  };
-}
+};
+
+addTemplates({helpPage});

@@ -1,49 +1,64 @@
-app.views.Document = class Document extends app.View {
+import View from '../view';
+import Mobile from './mobile';
+import Settings from './settings';
+import Menu from './menu';
+import Sidebar from '../sidebar/sidebar';
+import Resizer from './resizer';
+import Content from '../content/content';
+import Path from './path';
+import {
+  App
+} from '../../app/app';
+
+export default class Document extends View {
   constructor(...args) {
     super(...args);
+
     this.afterRoute = this.afterRoute.bind(this);
     this.onVisibilityChange = this.onVisibilityChange.bind(this);
 
-    this.addSubview((this.menu = new app.views.Menu),
-      this.addSubview(this.sidebar = new app.views.Sidebar));
+  }
 
-    if (app.views.Resizer.isSupported()) {
-      this.addSubview(this.resizer = new app.views.Resizer);
+  init() {
+    this.addSubview((this.menu = new Menu),
+      this.addSubview(this.sidebar = new Sidebar()));
+
+    if (Resizer.isSupported()) {
+      this.addSubview(this.resizer = new Resizer());
     }
-    this.addSubview(this.content = new app.views.Content);
-    if (!app.isSingleDoc() && !app.isMobile()) {
-      this.addSubview(this.path = new app.views.Path);
+
+    this.addSubview(this.content = new Content());
+
+    if (!App.isSingleDoc() && !App.isMobile()) {
+      this.addSubview(this.path = new Path());
     }
-    if (!app.isSingleDoc()) {
-      this.settings = new app.views.Settings;
+
+    if (!App.isSingleDoc()) {
+      this.settings = new Settings;
     }
 
     $.on(document.body, 'click', this.onClick);
-
-    this.activate();
   }
 
-  static initClass() {
-    this.el = document;
 
-    this.events = {
-      visibilitychange: 'onVisibilityChange'
-    };
+  static el = document;
 
-    this.shortcuts = {
-      help: 'onHelp',
-      preferences: 'onPreferences',
-      escape: 'onEscape',
-      superLeft: 'onBack',
-      superRight: 'onForward'
-    };
+  static events = {
+    visibilitychange: 'onVisibilityChange'
+  };
 
-    this.routes = {
-      after: 'afterRoute'
-    };
+  static shortcuts = {
+    help: 'onHelp',
+    preferences: 'onPreferences',
+    escape: 'onEscape',
+    superLeft: 'onBack',
+    superRight: 'onForward'
+  };
 
-    return this;
-  }
+  static routes = {
+    after: 'afterRoute'
+  };
+
 
   setTitle(title) {
     return this.el.title = title ? `${title} — DevDocs` : 'DevDocs API Documentation';
@@ -66,26 +81,26 @@ app.views.Document = class Document extends app.View {
       return;
     }
     this.delay(function () {
-      if (app.isMobile() !== app.views.Mobile.detect()) {
+      if (App.isMobile() !== Mobile.detect()) {
         location.reload();
       }
     }, 300);
   }
 
   onHelp() {
-    app.router.show('/help#shortcuts');
+    App.router.show('/help#shortcuts');
   }
 
   onPreferences() {
-    app.router.show('/settings');
+    App.router.show('/settings');
   }
 
   onEscape() {
-    const path = !app.isSingleDoc() || (location.pathname === app.doc.fullPath()) ?
+    const path = !App.isSingleDoc() || (location.pathname === App.doc.fullPath()) ?
       '/' :
-      app.doc.fullPath();
+      App.doc.fullPath();
 
-    app.router.show(path);
+    App.router.show(path);
   }
 
   onBack() {
@@ -113,13 +128,13 @@ app.views.Document = class Document extends app.View {
         window.location = '/';
         break;
       case 'hard-reload':
-        app.reload();
+        App.reload();
         break;
       case 'reset':
         if (confirm('Are you sure you want to reset DevDocs?')) {
-          app.reset();
+          App.reset();
         }
         break;
     }
   }
-}.initClass();
+}

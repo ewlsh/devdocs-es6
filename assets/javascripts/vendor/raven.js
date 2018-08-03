@@ -1366,7 +1366,7 @@ Raven.prototype = {
     //       a try/catch block*, will cause Chrome to output an error to console.error
     // borrowed from: https://github.com/angular/angular.js/pull/13945/files
     var chrome = _window.chrome;
-    var isChromePackagedApp = chrome && chrome.app && chrome.app.runtime;
+    var isChromePackagedApp = chrome && chrome.app && chrome.App.runtime;
     var hasPushAndReplaceState =
       !isChromePackagedApp &&
       _window.history &&

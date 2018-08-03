@@ -1,12 +1,9 @@
-require('../list/paginated_list');
+import PaginatedList from '../list/paginated_list';
 
-app.views.EntryList = class EntryList extends app.views.PaginatedList {
-  static initClass() {
-    this.tagName = 'div';
-    this.className = '_list _list-sub';
+export default class EntryList extends PaginatedList {
 
-    return this;
-  }
+  static tagName = 'div';
+  static className = '_list _list-sub';
 
   constructor(entries) {
     super(...arguments);
@@ -19,4 +16,4 @@ app.views.EntryList = class EntryList extends app.views.PaginatedList {
   render(entries) {
     return this.tmpl('sidebarEntry', entries);
   }
-}.initClass();
+}

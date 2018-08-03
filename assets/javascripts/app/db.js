@@ -1,11 +1,8 @@
-(function () {
-  let NAME = undefined;
-  let VERSION = undefined;
-  const Cls = (app.DB = class DB {
-    static initClass() {
-      NAME = 'docs';
-      VERSION = 15;
-    }
+import {App} from './app';
+
+export default class DB {
+    static NAME = 'docs';
+    static VERSION = 15;
 
     constructor() {
       this.onOpenSuccess = this.onOpenSuccess.bind(this);
@@ -30,7 +27,7 @@
 
       try {
         this.open = true;
-        const req = indexedDB.open(NAME, (VERSION * this.versionMultipler) + this.userVersion());
+        const req = indexedDB.open(DB.NAME, (DB.VERSION * this.versionMultipler) + this.userVersion());
         req.onsuccess = this.onOpenSuccess;
         req.onerror = this.onOpenError;
         req.onupgradeneeded = this.onUpgradeNeeded;
@@ -110,14 +107,14 @@
     onQuotaExceededError() {
       this.reset();
       this.db();
-      app.onQuotaExceeded();
+      App.onQuotaExceeded();
       Raven.captureMessage('QuotaExceededError', {
         level: 'warning'
       });
     }
 
     onVersionError() {
-      const req = indexedDB.open(NAME);
+      const req = indexedDB.open(DB.NAME);
       req.onsuccess = event => {
         return this.handleVersionMismatch(event.target.result.version);
       };
@@ -128,10 +125,10 @@
     }
 
     handleVersionMismatch(actualVersion) {
-      if (Math.floor(actualVersion / this.versionMultipler) !== VERSION) {
+      if (Math.floor(actualVersion / this.versionMultipler) !== DB.VERSION) {
         this.fail('version');
       } else {
-        this.setUserVersion(actualVersion - (VERSION * this.versionMultipler));
+        this.setUserVersion(actualVersion - (DB.VERSION * this.versionMultipler));
         this.db();
       }
     }
@@ -173,7 +170,7 @@
         } catch (error) {}
       }
 
-      for (let doc of app.docs.all()) {
+      for (let doc of App.docs.all()) {
         if (!$.arrayDelete(objectStoreNames, doc.slug)) {
           try {
             db.createObjectStore(doc.slug);
@@ -457,7 +454,7 @@
         }
 
         for (var slug of docs) {
-          if (!app.docs.findBy('slug', slug)) {
+          if (!App.docs.findBy('slug', slug)) {
             this.corruptedDocs.push(slug);
           }
         }
@@ -519,7 +516,7 @@
     }
 
     idbTransaction(db, options) {
-      app.lastIDBTransaction = [options.stores, options.mode];
+      App.lastIDBTransaction = [options.stores, options.mode];
       const txn = db.transaction(options.stores, options.mode);
       if (options.ignoreError !== false) {
         txn.onerror = function (event) {
@@ -537,14 +534,14 @@
     reset() {
       try {
         if (typeof indexedDB !== 'undefined' && indexedDB !== null) {
-          indexedDB.deleteDatabase(NAME);
+          indexedDB.deleteDatabase(DB.NAME);
         }
       } catch (error) {}
     }
 
     useIndexedDB() {
       try {
-        if (!app.isSingleDoc() && window.indexedDB) {
+        if (!App.isSingleDoc() && window.indexedDB) {
           return true;
         } else {
           this.reason = 'not_supported';
@@ -556,17 +553,14 @@
     }
 
     migrate() {
-      app.settings.set('schema', this.userVersion() + 1);
+      App.settings.set('schema', this.userVersion() + 1);
     }
 
     setUserVersion(version) {
-      app.settings.set('schema', version);
+      App.settings.set('schema', version);
     }
 
     userVersion() {
-      return app.settings.get('schema');
+      return App.settings.get('schema');
     }
-  });
-  Cls.initClass();
-  return Cls;
-})();
+  }

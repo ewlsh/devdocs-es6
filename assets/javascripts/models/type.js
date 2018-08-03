@@ -1,4 +1,7 @@
-app.models.Type = class Type extends app.Model {
+import Model from './model';
+import Entry from './entry';
+
+export default class Type extends Model {
   // Attributes: name, slug, count
 
   fullPath() {
@@ -10,10 +13,10 @@ app.models.Type = class Type extends app.Model {
   }
 
   toEntry() {
-    return new app.models.Entry({
+    return new Entry({
       doc: this.doc,
       name: `${this.doc.name} / ${this.name}`,
       path: `..${this.fullPath()}`
     });
   }
-};
+}

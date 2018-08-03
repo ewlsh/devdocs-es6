@@ -1,20 +1,22 @@
-app.UpdateChecker = class UpdateChecker {
+import Notif from '../views/misc/notif';
+
+export default class UpdateChecker {
   constructor() {
     this.checkDocs = this.checkDocs.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.lastCheck = Date.now();
 
     $.on(window, 'focus', this.onFocus);
-    if (app.appCache) {
-      app.appCache.on('updateready', this.onUpdateReady);
+    if (App.appCache) {
+      App.appCache.on('updateready', this.onUpdateReady);
     }
 
     setTimeout(this.checkDocs, 0);
   }
 
   check() {
-    if (app.appCache) {
-      app.appCache.update();
+    if (App.appCache) {
+      App.appCache.update();
     } else {
       ajax({
         url: $('script[src*="application"]').getAttribute('src'),
@@ -29,17 +31,17 @@ app.UpdateChecker = class UpdateChecker {
   }
 
   onUpdateReady() {
-    let notif = new app.views.Notif('UpdateReady', {
+    let notif = new Notif('UpdateReady', {
       autoHide: null
     });
     notif.show();
   }
 
   checkDocs() {
-    if (!app.settings.get('manualUpdate')) {
-      app.docs.updateInBackground();
+    if (!App.settings.get('manualUpdate')) {
+      App.docs.updateInBackground();
     } else {
-      app.docs.checkForUpdates(i => {
+      App.docs.checkForUpdates(i => {
         if (i > 0) {
           return this.onDocsUpdateReady();
         }
@@ -48,7 +50,7 @@ app.UpdateChecker = class UpdateChecker {
   }
 
   onDocsUpdateReady() {
-    let notif = new app.views.Notif('UpdateDocs', {
+    let notif = new Notif('UpdateDocs', {
       autoHide: null
     });
     notif.show();

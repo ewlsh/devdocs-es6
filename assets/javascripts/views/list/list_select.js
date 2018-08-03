@@ -1,19 +1,18 @@
-app.views.ListSelect = class ListSelect extends app.View {
-  static initClass() {
-    this.activeClass = 'active';
+import View from '../view';
 
-    this.events = {
-      click: 'onClick'
-    };
+export default class ListSelect extends View {
 
-    return this;
-  }
+  static activeClass = 'active';
+
+  static events = {
+    click: 'onClick'
+  };
 
   constructor(el) {
     super(...arguments);
 
     this.onClick = this.onClick.bind(this);
-    this.el = el; 
+    this.el = el;
   }
 
   deactivate() {
@@ -63,4 +62,4 @@ app.views.ListSelect = class ListSelect extends app.View {
       this.select(target);
     }
   }
-}.initClass();
+}

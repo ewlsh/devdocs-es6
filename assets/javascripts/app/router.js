@@ -1,23 +1,26 @@
-app.Router = class Router {
-  static initClass() {
-    $.extend(this.prototype, Events);
+import Util from '../lib/util';
+import Events from '../lib/events';
+import page from '../lib/page';
 
-    this.routes = [
-      ['*', 'before'],
-      ['/', 'root'],
-      ['/settings', 'settings'],
-      ['/offline', 'offline'],
-      ['/about', 'about'],
-      ['/news', 'news'],
-      ['/help', 'help'],
-      ['/:doc-:type/', 'type'],
-      ['/:doc/', 'doc'],
-      ['/:doc/:path(*)', 'entry'],
-      ['*', 'notFound']
-    ];
+import Cookies from '../vendor/cookies';
+import App from './app';
+Util();
 
-    return this;
-  }
+export default class Router {
+
+  static routes = [
+    ['*', 'before'],
+    ['/', 'root'],
+    ['/settings', 'settings'],
+    ['/offline', 'offline'],
+    ['/about', 'about'],
+    ['/news', 'news'],
+    ['/help', 'help'],
+    ['/:doc-:type/', 'type'],
+    ['/:doc/', 'doc'],
+    ['/:doc/:path(*)', 'entry'],
+    ['*', 'notFound']
+  ];
 
   constructor() {
     for (let [path, method] of this.constructor.routes) {
@@ -55,7 +58,7 @@ app.Router = class Router {
 
   doc(context, next) {
     let doc;
-    if (doc = app.docs.findBySlug(context.params.doc) || app.disabledDocs.findBySlug(context.params.doc)) {
+    if (doc = App.docs.findBySlug(context.params.doc) || App.disabledDocs.findBySlug(context.params.doc)) {
       context.doc = doc;
       context.entry = doc.toEntry();
       this.triggerRoute('entry');
@@ -67,7 +70,7 @@ app.Router = class Router {
 
   type(context, next) {
     let type;
-    const doc = app.docs.findBySlug(context.params.doc);
+    const doc = App.docs.findBySlug(context.params.doc);
 
     if (type = doc != null ? doc.types.findBy('slug', context.params.type) : undefined) {
       context.doc = doc;
@@ -81,7 +84,7 @@ app.Router = class Router {
 
   entry(context, next) {
     let entry;
-    const doc = app.docs.findBySlug(context.params.doc);
+    const doc = App.docs.findBySlug(context.params.doc);
     if (!doc) {
       return next();
     }
@@ -113,28 +116,28 @@ app.Router = class Router {
   }
 
   root() {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return '/';
     }
     this.triggerRoute('root');
   }
 
   settings(context) {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return `/#/${context.path}`;
     }
     this.triggerRoute('settings');
   }
 
   offline(context) {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return `/#/${context.path}`;
     }
     this.triggerRoute('offline');
   }
 
   about(context) {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return `/#/${context.path}`;
     }
     context.page = 'about';
@@ -142,7 +145,7 @@ app.Router = class Router {
   }
 
   news(context) {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return `/#/${context.path}`;
     }
     context.page = 'news';
@@ -150,7 +153,7 @@ app.Router = class Router {
   }
 
   help(context) {
-    if (app.isSingleDoc()) {
+    if (App.isSingleDoc()) {
       return `/#/${context.path}`;
     }
     context.page = 'help';
@@ -162,7 +165,7 @@ app.Router = class Router {
   }
 
   isIndex() {
-    return ((this.context != null ? this.context.path : undefined) === '/') || (app.isSingleDoc() && this.context != null && this.context.entry != null && this.context.entry.isIndex());
+    return ((this.context != null ? this.context.path : undefined) === '/') || (App.isSingleDoc() && this.context != null && this.context.entry != null && this.context.entry.isIndex());
   }
 
   setInitialPath() {
@@ -204,4 +207,5 @@ app.Router = class Router {
   replaceHash(hash) {
     page.replace(location.pathname + location.search + (hash || ''), null, true);
   }
-}.initClass();
+}
+$.extend(Router.prototype, Events);

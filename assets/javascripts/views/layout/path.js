@@ -1,4 +1,9 @@
-app.views.Path = class Path extends app.View {
+import View from '../view';
+import { App } from '../../app/app'
+
+import { path } from '../../templates/path_tmpl';
+
+export default class Path extends View {
   constructor(...args) {
     super(...args);
 
@@ -6,31 +11,27 @@ app.views.Path = class Path extends app.View {
     this.afterRoute = this.afterRoute.bind(this);
   }
 
-  static initClass() {
-    this.className = '_path';
-    this.attributes = {
-      role: 'complementary'
-    };
+  static className = '_path';
+  static attributes = {
+    role: 'complementary'
+  };
 
-    this.events = {
-      click: 'onClick'
-    };
+  static events = {
+    click: 'onClick'
+  };
 
-    this.routes = {
-      after: 'afterRoute'
-    };
-
-    return this;
-  }
+  static routes = {
+    after: 'afterRoute'
+  };
 
   render(...args) {
-    this.html(this.tmpl('path', ...args));
+    this.html(path(...args));
     this.show();
   }
 
   show() {
     if (!this.el.parentNode) {
-      this.prependTo(app.el);
+      this.prependTo(App.constructor.el);
     }
   }
 
@@ -62,7 +63,7 @@ app.views.Path = class Path extends app.View {
 
     if (this.clicked) {
       this.clicked = null;
-      app.document.sidebar.reset();
+      App.document.sidebar.reset();
     }
   }
-}.initClass();
+}

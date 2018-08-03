@@ -23,7 +23,7 @@ class App < Sinatra::Application
     set :assets_prefix, 'assets'
     set :assets_path, File.join(public_folder, assets_prefix)
     set :assets_manifest_path, File.join(assets_path, 'manifest.json')
-    set :assets_compile, %w(*.png docs.js docs.json application.js application.css application-dark.css)
+    set :assets_compile, %w(*.png docs.js docs.json application.css application-dark.css)
 
     require 'yajl/json_gem'
     set :docs_prefix, 'docs'
@@ -288,7 +288,7 @@ class App < Sinatra::Application
     200
   end
 
-  %w(docs.json application.js application.css).each do |asset|
+  %w(docs.json application.css).each do |asset|
     class_eval <<-CODE, __FILE__, __LINE__ + 1
       get '/#{asset}' do
         redirect asset_path('#{asset}', protocol: 'http')

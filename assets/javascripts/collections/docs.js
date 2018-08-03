@@ -1,18 +1,13 @@
-(function () {
-  let NORMALIZE_VERSION_RGX = undefined;
-  let NORMALIZE_VERSION_SUB = undefined;
-  let CONCURRENCY = undefined;
-  const Cls = (app.collections.Docs = class Docs extends app.Collection {
-    static initClass() {
-      this.model = 'Doc';
+  import Collection from './collection'
+  
+  export default class Docs extends Collection {
+    static NORMALIZE_VERSION_RGX = /\.(\d)$/;
+    static NORMALIZE_VERSION_SUB = '.0$1';
 
-      NORMALIZE_VERSION_RGX = /\.(\d)$/;
-      NORMALIZE_VERSION_SUB = '.0$1';
-
-      // Load models concurrently.
-      // It's not pretty but I didn't want to import a promise library only for this.
-      CONCURRENCY = 3;
-    }
+    // Load models concurrently.
+    // It's not pretty but I didn't want to import a promise library only for this.
+    static CONCURRENCY = 3;
+    static model = 'Doc';
 
     findBySlug(slug) {
       return this.findBy('slug', slug) || this.findBy('slug_without_version', slug);
@@ -76,7 +71,7 @@
     }
 
     getInstallStatuses(callback) {
-      app.db.versions(this.models, function (statuses) {
+      App.db.versions(this.models, function (statuses) {
         if (statuses) {
           for (let key in statuses) {
             const value = statuses[key];
@@ -119,7 +114,4 @@
         }
       });
     }
-  });
-  Cls.initClass();
-  return Cls;
-})();
+  }

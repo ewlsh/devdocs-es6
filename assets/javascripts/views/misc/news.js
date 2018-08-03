@@ -1,15 +1,12 @@
-require('../misc/notif');
+import Notif from '../misc/notif';
+import { notifNews } from '../../templates/notif_tmpl';
 
-app.views.News = class News extends app.views.Notif {
-  static initClass() {
-    this.className += ' _notif-news';
+export default class News extends Notif {
+  static className = News.className + ' _notif-news';
 
-    this.defautOptions = {
-      autoHide: 30000
-    };
-
-    return this;
-  }
+  static defautOptions = {
+    autoHide: 30000
+  };
 
   constructor(...args) {
     super(...args);
@@ -24,7 +21,7 @@ app.views.News = class News extends app.views.Notif {
   }
 
   render() {
-    this.html(app.templates.notifNews(this.unreadNews));
+    this.html(notifNews(this.unreadNews));
   }
 
   getUnreadNews() {
@@ -35,7 +32,7 @@ app.views.News = class News extends app.views.Notif {
 
     return (() => {
       const result = [];
-      for (let news of Array.from(app.news)) {
+      for (let news of Array.from(App.news)) {
         if (new Date(news[0]).getTime() <= time) {
           break;
         }
@@ -46,14 +43,14 @@ app.views.News = class News extends app.views.Notif {
   }
 
   getLastNewsTime() {
-    return new Date(app.news[0][0]).getTime();
+    return new Date(App.news[0][0]).getTime();
   }
 
   getLastReadTime() {
-    return app.settings.get('news');
+    return App.settings.get('news');
   }
 
   markAllAsRead() {
-    app.settings.set('news', this.getLastNewsTime());
+    App.settings.set('news', this.getLastNewsTime());
   }
-}.initClass();
+}

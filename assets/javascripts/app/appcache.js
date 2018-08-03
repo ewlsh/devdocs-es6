@@ -1,9 +1,9 @@
-app.AppCache = class AppCache {
-  static initClass() {
-    $.extend(this.prototype, Events);
+import Util from '../lib/util';
+import Events from '../lib/events';
 
-    return this;
-  }
+Util();
+
+export default class AppCache {
 
   static isEnabled() {
     try {
@@ -60,4 +60,6 @@ app.AppCache = class AppCache {
       this.trigger('updateready');
     }
   }
-}.initClass();
+}
+$.extend(AppCache.prototype, Events);
+

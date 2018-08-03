@@ -1,22 +1,20 @@
-app.views.SidebarHover = class SidebarHover extends app.View {
-  static initClass() {
-    this.itemClass = '_list-hover';
+import View from '../view'
 
-    this.events = {
-      focus: 'onFocus',
-      blur: 'onBlur',
-      mouseover: 'onMouseover',
-      mouseout: 'onMouseout',
-      scroll: 'onScroll',
-      click: 'onClick'
-    };
+export default class SidebarHover extends View {
+  static itemClass = '_list-hover';
 
-    this.routes = {
-      after: 'onRoute'
-    };
+  static events = {
+    focus: 'onFocus',
+    blur: 'onBlur',
+    mouseover: 'onMouseover',
+    mouseout: 'onMouseout',
+    scroll: 'onScroll',
+    click: 'onClick'
+  };
 
-    return this;
-  }
+  static routes = {
+    after: 'onRoute'
+  };
 
   constructor(el) {
     super(...arguments);
@@ -134,4 +132,4 @@ app.views.SidebarHover = class SidebarHover extends app.View {
   onRoute() {
     this.hide();
   }
-}.initClass();
+}

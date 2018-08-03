@@ -12,16 +12,16 @@ if ((typeof console !== 'undefined' && console !== null ? console.time : undefin
   // App
   //
 
-  const _init = app.init;
-  app.init = function () {
+  const _init = App.init;
+  App.init = function () {
     console.time('Init');
     _init.call(app);
     console.timeEnd('Init');
     return console.time('Load');
   };
 
-  const _start = app.start;
-  app.start = function () {
+  const _start = App.start;
+  App.start = function () {
     console.timeEnd('Load');
     console.time('Start');
     _start.call(app, ...arguments);
@@ -31,7 +31,7 @@ if ((typeof console !== 'undefined' && console !== null ? console.time : undefin
   //
   // Searcher
   //
-  app.Searcher = class Searcher extends app.Searcher {
+  App.Searcher = class Searcher extends App.Searcher {
     constructor() {
       super(arguments);
     }
@@ -80,7 +80,7 @@ if ((typeof console !== 'undefined' && console !== null ? console.time : undefin
 
   this.viewTree = function (view, level, visited) {
     if (view == null) {
-      view = app.document;
+      view = App.document;
     }
     if (level == null) {
       level = 0;

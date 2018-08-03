@@ -1,12 +1,12 @@
-app.views.Notice = class Notice extends app.View {
-  static initClass() {
-    this.className = '_notice';
-    this.attributes = {
-      role: 'alert'
-    };
+import View from '../view';
+import { App } from '../../app/app';
 
-    return this;
-  }
+export default class Notice extends View {
+
+  static className = '_notice';
+  static attributes = {
+    role: 'alert'
+  };
 
   constructor(type, ...rest) {
     super(...arguments);
@@ -31,10 +31,10 @@ app.views.Notice = class Notice extends app.View {
 
   show() {
     this.html(this.tmpl(`${this.type}Notice`, ...this.args));
-    this.prependTo(app.el);
+    this.prependTo(App.constructor.el);
   }
 
   hide() {
     $.remove(this.el);
   }
-}.initClass();
+}

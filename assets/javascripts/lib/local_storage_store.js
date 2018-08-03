@@ -1,4 +1,4 @@
-this.LocalStorageStore = class LocalStorageStore {
+export default class LocalStorageStore {
   get(key) {
     try {
       return JSON.parse(localStorage.getItem(key));
@@ -25,4 +25,4 @@ this.LocalStorageStore = class LocalStorageStore {
       return true;
     } catch (error) {}
   }
-};
+}

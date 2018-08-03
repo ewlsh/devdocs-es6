@@ -1,3 +1,42 @@
+<!DOCTYPE html>
+<!--<%= ' manifest="/manifest.appcache"' if App.production? %> -->
+
+<html prefix="og: http://ogp.me/ns#" lang="en" class="_booting">
+<head>
+  <!--<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no">
+  <meta name="description" content="Fast, offline, and free documentation browser for developers. Search 100+ docs in one web app: HTML, CSS, JavaScript, PHP, Ruby, Python, Go, C, C++…">
+  <meta property="application-name" content="DevDocs">
+  <meta property="og:title" content="DevDocs">
+  <meta property="og:description" content="Fast, offline, and free documentation browser for developers. Search 100+ docs in one web app including HTML, CSS, JavaScript, PHP, Ruby, Python, Go, C, C++, and many more.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= canonical_origin %>">
+  <meta property="og:image" content="<%= App.cdn_origin %>/images/icon-320.png">
+  <meta name="apple-mobile-web-app-title" content="DevDocs">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="robots" content="noodp">
+  <title>DevDocs API Documentation</title>
+  <link rel="canonical" href="<%= canonical_origin %>">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="DevDocs Search">
+  <link rel="alternate" href="<%= canonical_origin %>/feed" title="DevDocs" type="application/atom+xml">
+  <link rel="icon" type="image/x-icon" href="<%= App.cdn_origin %>/favicon.ico">
+  <link rel="fluid-icon" href="<%= App.cdn_origin %>/images/fluid-icon.png" title="DevDocs">
+  <link rel="apple-touch-icon" sizes="72x72" href="<%= App.cdn_origin %>/images/apple-icon-72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="<%= App.cdn_origin %>/images/apple-icon-76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="<%= App.cdn_origin %>/images/apple-icon-114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="<%= App.cdn_origin %>/images/apple-icon-120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="<%= App.cdn_origin %>/images/apple-icon-144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="<%= App.cdn_origin %>/images/apple-icon-152.png">
+  <link rel="apple-touch-icon" sizes="160x160" href="<%= App.cdn_origin %>/images/apple-icon-160.png">
+  <link rel="mask-icon" href="<%= App.cdn_origin %>/images/webkit-mask-icon.svg" color="#398df0">
+  <link rel="stylesheet" href="<%= main_stylesheet_path %>" data-alt="<%= alternate_stylesheet_path %>">-->
+   <link rel="stylesheet" href="/application.css" data-alt="">
+</head>
+<body><!--<%= %( class="#{app_layout}") if app_layout %>-->
+<!--<noscript class="_fail">DevDocs requires JavaScript to run.</noscript>-->
 <div class="_app" role="application">
   <header class="_header" role="banner">
     <button type="button" aria-label="Toggle navigation" class="_header-btn" data-toggle-sidebar hidden>
@@ -29,11 +68,11 @@
   </header>
   <section class="_sidebar" tabindex="-1">
     <div class="_list" role="navigation">
-      <% unless @doc %>
+     <!-- <% unless @doc %>
       <% App.docs.each do |slug, doc| %>
       <a href="/<%= slug %>/" class="_list-item"><%= doc['full_name'] %></a>
       <% end %>
-      <% end %>
+      <% end %>-->
     </div>
   </section>
   <div class="_container" role="document">
@@ -63,9 +102,13 @@
     <symbol id="icon-external-link" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></symbol>
   </defs>
 </svg>
-<style data-size="<%= app_size %>" data-resizer>
-  ._container { margin-left: <%= app_size %>; }
+<style  data-resizer>
+  
+</style>
+<!--<!data-size="<%= app_size %>"--._container { margin-left: <%= app_size %>; }
   ._header, ._list { width: <%= app_size %>; }
   ._list-hover.clone { min-width: <%= app_size %>; }
-  ._notice, ._path, ._resizer { left: <%= app_size %>; }
-</style>
+  ._notice, ._path, ._resizer { left: <%= app_size %>; }-->
+<script src="/bundle.js"></script>
+</body>
+</html>

@@ -1,4 +1,21 @@
-app.views.Content = class Content extends app.View {
+import {
+  App
+} from '../../app/app';
+
+import RootPage from './root_page';
+import EntryPage from './entry_page';
+import OfflinePage from './offline_page';
+import SettingsPage from './settings_page';
+import StaticPage from './static_page';
+import TypePage from './type_page';
+
+import View from '../view';
+
+import {
+  bootError
+} from '../../templates/error_tmpl';
+
+export default class Content extends View {
   constructor(...args) {
     super(...args);
 
@@ -17,54 +34,49 @@ app.views.Content = class Content extends app.View {
     this.onClick = this.onClick.bind(this);
     this.onAltF = this.onAltF.bind(this);
 
-    this.scrollEl = app.isMobile() ?
+    this.scrollEl = App.isMobile() ?
       (document.scrollingElement || document.body) :
       this.el;
     this.scrollMap = {};
     this.scrollStack = [];
 
-    this.rootPage = new app.views.RootPage();
-    this.staticPage = new app.views.StaticPage();
-    this.settingsPage = new app.views.SettingsPage();
-    this.offlinePage = new app.views.OfflinePage();
-    this.typePage = new app.views.TypePage();
-    this.entryPage = new app.views.EntryPage();
+    this.rootPage = new RootPage();
+    this.staticPage = new StaticPage();
+    this.settingsPage = new SettingsPage();
+    this.offlinePage = new OfflinePage();
+    this.typePage = new TypePage();
+    this.entryPage = new EntryPage();
 
     this.entryPage
       .on('loading', this.onEntryLoading)
       .on('loaded', this.onEntryLoaded);
 
-    app
-      .on('ready', this.onReady)
-      .on('bootError', this.onBootError);
+    App.on('ready', this.onReady).on('bootError', this.onBootError);
 
   }
 
-  static initClass() {
-    this.el = '._content';
-    this.loadingClass = '_content-loading';
+  static el = '._content';
+  static loadingClass = '_content-loading';
 
-    this.events = {
-      click: 'onClick'
-    };
+  static events = {
+    click: 'onClick'
+  };
 
-    this.shortcuts = {
-      altUp: 'scrollStepUp',
-      altDown: 'scrollStepDown',
-      pageUp: 'scrollPageUp',
-      pageDown: 'scrollPageDown',
-      pageTop: 'scrollToTop',
-      pageBottom: 'scrollToBottom',
-      altF: 'onAltF'
-    };
+  static shortcuts = {
+    altUp: 'scrollStepUp',
+    altDown: 'scrollStepDown',
+    pageUp: 'scrollPageUp',
+    pageDown: 'scrollPageDown',
+    pageTop: 'scrollToTop',
+    pageBottom: 'scrollToBottom',
+    altF: 'onAltF'
+  };
 
-    this.routes = {
-      before: 'beforeRoute',
-      after: 'afterRoute'
-    };
+  static routes = {
+    before: 'beforeRoute',
+    after: 'afterRoute'
+  };
 
-    return this;
-  }
 
   show(view) {
     this.hideLoading();
@@ -94,7 +106,7 @@ app.views.Content = class Content extends app.View {
   }
 
   smoothScrollTo(value) {
-    if (app.settings.get('fastScroll')) {
+    if (App.settings.get('fastScroll')) {
       this.scrollTo(value);
     } else {
       $.smoothScroll(this.scrollEl, value || 0);
@@ -149,7 +161,7 @@ app.views.Content = class Content extends app.View {
 
   onBootError() {
     this.hideLoading();
-    this.html(this.tmpl('bootError'));
+    this.html(bootError());
   }
 
   onEntryLoading() {
@@ -185,7 +197,7 @@ app.views.Content = class Content extends app.View {
 
     if (this.scrollMap[this.routeCtx.state.id] == null) {
       this.scrollStack.push(this.routeCtx.state.id);
-      while (this.scrollStack.length > app.config.history_cache_size) {
+      while (this.scrollStack.length > App.config.history_cache_size) {
         delete this.scrollMap[this.scrollStack.shift()];
       }
     }
@@ -215,7 +227,7 @@ app.views.Content = class Content extends app.View {
     }
 
     this.view.onRoute(context);
-    app.document.setTitle(typeof this.view.getTitle === 'function' ? this.view.getTitle() : undefined);
+    App.document.setTitle(typeof this.view.getTitle === 'function' ? this.view.getTitle() : undefined);
   }
 
   onClick(event) {
@@ -263,4 +275,4 @@ app.views.Content = class Content extends app.View {
 
     return needle && ['http:/', 'https:'].includes(needle);
   }
-}.initClass();
+}

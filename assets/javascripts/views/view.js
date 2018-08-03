@@ -1,22 +1,28 @@
-app.View = class View {
-  static initClass() {
-    $.extend(this.prototype, Events);
+import Util from '../lib/util';
+import Events from '../lib/events';
+import { App } from '../app/app';
+import {renderTemplate} from '../templates/base';
 
-    return this;
-  }
+Util();
 
+export default class View {
   constructor() {
     this.setupElement();
-    if (this.el.className) {
+    
+    if (this.el && this.el.className) {
       this.originalClassName = this.el.className;
     }
+    
     if (this.constructor.className) {
       this.resetClass();
     }
+    
     this.refreshElements();
-    if (typeof this.init === 'function') {
-      this.init();
-    }
+    
+    //if (typeof this.init === 'function') {
+    //  this.init();
+    //}
+    
     this.refreshElements();
   }
 
@@ -144,7 +150,7 @@ app.View = class View {
   }
 
   tmpl(...args) {
-    return app.templates.render(...(args || []));
+    return renderTemplate(...(args || []));
   }
 
   delay(fn, ...args) {
@@ -172,14 +178,14 @@ app.View = class View {
     if (this.constructor.routes) {
       for (name in this.constructor.routes) {
         method = this.constructor.routes[name];
-        app.router.on(name, this[method]);
+        App.router.on(name, this[method]);
       }
     }
 
     if (this.constructor.shortcuts) {
       for (name in this.constructor.shortcuts) {
         method = this.constructor.shortcuts[name];
-        app.shortcuts.on(name, this[method]);
+        App.shortcuts.on(name, this[method]);
       }
     }
   }
@@ -196,14 +202,14 @@ app.View = class View {
     if (this.constructor.routes) {
       for (name in this.constructor.routes) {
         method = this.constructor.routes[name];
-        app.router.off(name, this[method]);
+        App.router.off(name, this[method]);
       }
     }
 
     if (this.constructor.shortcuts) {
       for (name in this.constructor.shortcuts) {
         method = this.constructor.shortcuts[name];
-        app.shortcuts.off(name, this[method]);
+        App.shortcuts.off(name, this[method]);
       }
     }
   }
@@ -244,4 +250,5 @@ app.View = class View {
     this.deactivate();
     $.remove(this.el);
   }
-}.initClass();
+}
+$.extend(View.prototype, Events);

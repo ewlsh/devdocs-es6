@@ -1,21 +1,22 @@
-app.views.OfflinePage = class OfflinePage extends app.View {
+import View from '../view';
+import {offlineDoc} from '../../templates/pages/offline_tmpl'
+
+import { offlinePage } from '../../templates/pages/offline_tmpl';
+import { offlineError } from '../../templates/error_tmpl';
+
+export default class OfflinePage extends View {
   constructor(...args) {
     super(...args);
 
-    this.onClick = this.onClick.bind(this); 
+    this.onClick = this.onClick.bind(this);
   }
 
-  static initClass() {
-    this.className = '_static';
+  static className = '_static';
 
-    this.events = {
-      click: 'onClick',
-      change: 'onChange'
-    };
-
-    return this;
-  }
-
+  static events = {
+    click: 'onClick',
+    change: 'onChange'
+  };
   deactivate() {
     if (super.deactivate(...arguments)) {
       this.empty();
@@ -23,30 +24,30 @@ app.views.OfflinePage = class OfflinePage extends app.View {
   }
 
   render() {
-    if (app.cookieBlocked) {
-      this.html(this.tmpl('offlineError', 'cookie_blocked'));
+    if (App.cookieBlocked) {
+      this.html(offlineError('cookie_blocked'));
       return;
     }
 
-    app.docs.getInstallStatuses(statuses => {
+    App.docs.getInstallStatuses(statuses => {
       if (!this.activated) {
         return;
       }
       if (statuses === false) {
-        this.html(this.tmpl('offlineError', app.db.reason, app.db.error));
+        this.html(offlineError(App.db.reason, App.db.error));
       } else {
         let html = '';
-        for (let doc of app.docs.all()) {
+        for (let doc of App.docs.all()) {
           html += this.renderDoc(doc, statuses[doc.slug]);
         }
-        this.html(this.tmpl('offlinePage', html));
+        this.html(offlinePage(html));
         this.refreshLinks();
       }
     });
   }
 
   renderDoc(doc, status) {
-    return app.templates.render('offlineDoc', doc, status);
+    return offlineDoc(doc, status);
   }
 
   getTitle() {
@@ -64,7 +65,7 @@ app.views.OfflinePage = class OfflinePage extends app.View {
     while (!(slug = el.getAttribute('data-slug'))) {
       el = el.parentNode;
     }
-    return app.docs.findBy('slug', slug);
+    return App.docs.findBy('slug', slug);
   }
 
   docEl(doc) {
@@ -86,7 +87,7 @@ app.views.OfflinePage = class OfflinePage extends app.View {
       doc[action](this.onInstallSuccess.bind(this, doc), this.onInstallError.bind(this, doc), this.onInstallProgress.bind(this, doc));
       el.parentNode.innerHTML = `${el.textContent.replace(/e$/, '')}ing…`;
     } else if (action = el.getAttribute('data-action-all')) {
-      app.db.migrate();
+      App.db.migrate();
       for (el of this.findAll(`[data-action='${action}']`)) {
         $.click(el);
       }
@@ -135,7 +136,7 @@ app.views.OfflinePage = class OfflinePage extends app.View {
 
   onChange(event) {
     if (event.target.name === 'autoUpdate') {
-      app.settings.set('manualUpdate', !event.target.checked);
+      App.settings.set('manualUpdate', !event.target.checked);
     }
   }
-}.initClass();
+}

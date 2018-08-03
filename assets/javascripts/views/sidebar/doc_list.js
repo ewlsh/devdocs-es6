@@ -1,4 +1,12 @@
-app.views.DocList = class DocList extends app.View {
+import View from '../view'
+import ListFocus from '../list/list_focus';
+import ListFold from '../list/list_fold';
+import ListSelect from '../list/list_select';
+import EntryList from './entry_list';
+import TypeList from './type_list';
+import { App } from '../../app/app';
+
+export default class DocList extends View {
   constructor(...args) {
     super(...args);
 
@@ -11,36 +19,34 @@ app.views.DocList = class DocList extends app.View {
 
     this.lists = {};
 
-    this.addSubview(this.listFocus = new app.views.ListFocus(this.el));
-    this.addSubview(this.listFold = new app.views.ListFold(this.el));
-    this.addSubview(this.listSelect = new app.views.ListSelect(this.el));
+    this.addSubview(this.listFocus = new ListFocus(this.el));
+    this.addSubview(this.listFold = new ListFold(this.el));
+    this.addSubview(this.listSelect = new ListSelect(this.el));
 
-    app.on('ready', this.render);
+    App.on('ready', this.render);
   }
 
-  static initClass() {
-    this.className = '_list';
-    this.attributes = {
-      role: 'navigation'
-    };
+  static className = '_list';
+  static attributes = {
+    role: 'navigation'
+  };
 
-    this.events = {
-      open: 'onOpen',
-      close: 'onClose',
-      click: 'onClick'
-    };
+  static events = {
+    open: 'onOpen',
+    close: 'onClose',
+    click: 'onClick'
+  };
 
-    this.routes = {
-      after: 'afterRoute'
-    };
+  static routes = {
+    after: 'afterRoute'
+  };
 
-    this.elements = {
-      disabledTitle: '._list-title',
-      disabledList: '._disabled-list'
-    };
+  static elements = {
+    disabledTitle: '._list-title',
+    disabledList: '._disabled-list'
+  };
 
-    return this;
-  }
+
 
   activate() {
     if (super.activate(...arguments)) {
@@ -63,27 +69,27 @@ app.views.DocList = class DocList extends app.View {
 
   render() {
     let html = '';
-    for (let doc of app.docs.all()) {
+    for (let doc of App.docs.all()) {
       html += this.tmpl('sidebarDoc', doc, {
-        fullName: app.docs.countAllBy('name', doc.name) > 1
+        fullName: App.docs.countAllBy('name', doc.name) > 1
       });
     }
     this.html(html);
-    if (!app.isSingleDoc() && (app.disabledDocs.size() !== 0)) {
+    if (!App.isSingleDoc() && (App.disabledDocs.size() !== 0)) {
       this.renderDisabled();
     }
   }
 
   renderDisabled() {
     this.append(this.tmpl('sidebarDisabled', {
-      count: app.disabledDocs.size()
+      count: App.disabledDocs.size()
     }));
     this.refreshElements();
     this.renderDisabledList();
   }
 
   renderDisabledList() {
-    if (app.settings.get('hideDisabled')) {
+    if (App.settings.get('hideDisabled')) {
       this.removeDisabledList();
     } else {
       this.appendDisabledList();
@@ -93,7 +99,7 @@ app.views.DocList = class DocList extends app.View {
   appendDisabledList() {
     let doc;
     let html = '';
-    const docs = [].concat(...(app.disabledDocs.all() || []));
+    const docs = [].concat(...(App.disabledDocs.all() || []));
 
     while ((doc = docs.shift())) {
       if (doc.version != null) {
@@ -137,26 +143,26 @@ app.views.DocList = class DocList extends app.View {
       this.listFocus.blur();
     }
     this.listFold.reset();
-    if (options.revealCurrent || app.isSingleDoc()) {
+    if (options.revealCurrent || App.isSingleDoc()) {
       this.revealCurrent();
     }
   }
 
   onOpen(event) {
     $.stopEvent(event);
-    const doc = app.docs.findBy('slug', event.target.getAttribute('data-slug'));
+    const doc = App.docs.findBy('slug', event.target.getAttribute('data-slug'));
 
     if (doc && !this.lists[doc.slug]) {
       this.lists[doc.slug] = doc.types.isEmpty() ?
-        new app.views.EntryList(doc.entries.all()) :
-        new app.views.TypeList(doc);
+        new EntryList(doc.entries.all()) :
+        new TypeList(doc);
       $.after(event.target, this.lists[doc.slug].el);
     }
   }
 
   onClose(event) {
     $.stopEvent(event);
-    const doc = app.docs.findBy('slug', event.target.getAttribute('data-slug'));
+    const doc = App.docs.findBy('slug', event.target.getAttribute('data-slug'));
 
     if (doc && this.lists[doc.slug]) {
       this.lists[doc.slug].detach();
@@ -186,14 +192,14 @@ app.views.DocList = class DocList extends app.View {
 
   revealCurrent() {
     let model;
-    if (model = app.router.context.type || app.router.context.entry) {
+    if (model = App.router.context.type || App.router.context.entry) {
       this.reveal(model);
       this.select(model);
     }
   }
 
   openDoc(doc) {
-    if (app.disabledDocs.contains(doc) && doc.version) {
+    if (App.disabledDocs.contains(doc) && doc.version) {
       this.listFold.open(this.find(`[data-slug='${doc.slug_without_version}']`));
     }
     this.listFold.open(this.find(`[data-slug='${doc.slug}']`));
@@ -215,17 +221,17 @@ app.views.DocList = class DocList extends app.View {
 
   scrollTo(model) {
     $.scrollTo(this.find(`a[href='${model.fullPath()}']`), null, 'top', {
-      margin: app.isMobile() ? 48 : 0
+      margin: App.isMobile() ? 48 : 0
     });
   }
 
   toggleDisabled() {
     if (this.disabledTitle.classList.contains('open-title')) {
       this.removeDisabledList();
-      app.settings.set('hideDisabled', true);
+      App.settings.set('hideDisabled', true);
     } else {
       this.appendDisabledList();
-      app.settings.set('hideDisabled', false);
+      App.settings.set('hideDisabled', false);
     }
   }
 
@@ -237,9 +243,9 @@ app.views.DocList = class DocList extends app.View {
       this.toggleDisabled();
     } else if (slug = target.getAttribute('data-enable')) {
       $.stopEvent(event);
-      const doc = app.disabledDocs.findBy('slug', slug);
+      const doc = App.disabledDocs.findBy('slug', slug);
       if (doc) {
-        app.enableDoc(doc, this.onEnabled, this.onEnabled);
+        App.enableDoc(doc, this.onEnabled, this.onEnabled);
       }
     }
   }
@@ -260,4 +266,4 @@ app.views.DocList = class DocList extends app.View {
       this.select(context.type || context.entry);
     }
   }
-}.initClass();
+}

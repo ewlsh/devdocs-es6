@@ -1,13 +1,10 @@
 // TODO This was an erb template.
 
-app.templates.newsPage = () =>
-  ` <h1 class="_lined-heading">Changelog</h1>
-<p class="_note">
-  For the latest news, follow <a href="https://twitter.com/DevDocs">@DevDocs</a>.<br>
-  For development updates, follow the project on <a href="https://github.com/freeCodeCamp/devdocs">GitHub</a>.
-<div class="_news">${app.templates.newsList(app.news)}</div> `;
+import {
+  addTemplates
+} from '../base';
 
-app.templates.newsList = function (news, options) {
+export let newsList = function (news, options) {
   if (options == null) {
     options = {};
   }
@@ -26,6 +23,13 @@ app.templates.newsList = function (news, options) {
   return result;
 };
 
+export let newsPage = () =>
+  ` <h1 class="_lined-heading">Changelog</h1>
+<p class="_note">
+  For the latest news, follow <a href="https://twitter.com/DevDocs">@DevDocs</a>.<br>
+  For development updates, follow the project on <a href="https://github.com/freeCodeCamp/devdocs">GitHub</a>.
+<div class="_news">${newsList(App.news)}</div> `;
+
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 var newsItem = function (date, news) {
@@ -42,6 +46,8 @@ var newsItem = function (date, news) {
   return result;
 };
 
+addTemplates({newsPage, newsItem, newsList});
+
 // TODO
 
-app.news = "<%= App.news.to_json %>";
+// App.news = "<%= App.news.to_json %>";

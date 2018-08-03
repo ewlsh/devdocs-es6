@@ -1,11 +1,10 @@
-app.views.HiddenPage = class HiddenPage extends app.View {
-  static initClass() {
-    this.events = {
-      click: 'onClick'
-    };
+import View from '../view';
+import Notice from '../misc/notice'
 
-    return this;
-  }
+export default class HiddenPage extends View {
+  static events = {
+    click: 'onClick'
+  };
 
   constructor(el, entry) {
     super(...arguments);
@@ -13,8 +12,8 @@ app.views.HiddenPage = class HiddenPage extends app.View {
     this.onClick = this.onClick.bind(this);
     this.el = el;
     this.entry = entry;
-    
-    this.addSubview(this.notice = new app.views.Notice('disabledDoc'));
+
+    this.addSubview(this.notice = new Notice('disabledDoc'));
     this.activate();
   }
 
@@ -25,4 +24,4 @@ app.views.HiddenPage = class HiddenPage extends app.View {
       $.popup(link);
     }
   }
-}.initClass();
+}

@@ -1,13 +1,51 @@
-this.app = {
-  _$: $,
-  _$$: $$,
-  _page: page,
-  collections: {},
-  models: {},
-  templates: {},
-  views: {},
+import Docs from '../collections/docs';
+import Doc from '../models/doc';
+import Entries from '../collections/entries';
+import AppCache from './appcache';
+import Shortcuts from './shortcuts';
+import Router from './router';
+import Document from '../views/layout/document';
+import Mobile from '../views/layout/mobile';
+import Settings from './settings';
+import DB from './db';
+import LocalStorageStore from '../lib/local_storage_store';
+import {
+  unsupportedBrowser
+} from '../templates/error_tmpl';
+import Notif from '../views/misc/notif';
+import Notice from '../views/misc/notice';
+import News from '../views/misc/news';
+import Updates from '../views/misc/updates';
+import UpdateChecker from './update_checker';
+import Tip from '../views/misc/tip';
+import Events from '../lib/events';
+
+import page from '../lib/page';
+
+
+
+import Util from '../lib/util';
+
+Util();
+
+class App_ {
+  static el = $('._app');
+
+  get _$() {
+    return $
+  };
+  get _$$() {
+    return $$
+  };
+  _page = page;
+  collections = {};
+  models = {};
+  templates = {};
+  views = {};
 
   init() {
+    this.el = App_.el;
+
     try {
       this.initErrorTracking();
     } catch (error) {}
@@ -15,23 +53,42 @@ this.app = {
       return;
     }
 
-    this.el = $('._app');
     this.localStorage = new LocalStorageStore;
-    if (app.AppCache.isEnabled()) {
-      this.appCache = new app.AppCache;
+    if (AppCache.isEnabled()) {
+      this.appCache = new AppCache;
     }
-    this.settings = new app.Settings;
-    this.db = new app.DB();
+    this.settings = new Settings;
+    this.db = new DB();
 
-    this.docs = new app.collections.Docs;
-    this.disabledDocs = new app.collections.Docs;
-    this.entries = new app.collections.Entries;
+    this.docs = new Docs;
+    this.disabledDocs = new Docs;
+    this.entries = new Entries;
 
-    this.router = new app.Router;
-    this.shortcuts = new app.Shortcuts;
-    this.document = new app.views.Document;
+    this.config = {
+      db_filename: 'db.json',
+      default_docs: "<%= App.default_docs.to_json %>",
+      docs_origin: '<%= App.docs_origin %>',
+      env: '<%= App.environment %>',
+      history_cache_size: 10,
+      index_filename: 'index.json',
+      index_path: '/<%= App.docs_prefix %>',
+      max_results: 50,
+      production_host: 'devdocs.io',
+      search_param: 'q',
+      sentry_dsn: '<%= App.sentry_dsn %>',
+      version: "<%= Time.now.to_i %>",
+      release: "<%= Time.now.utc.httpdate.to_json %>",
+      mathml_stylesheet: '<%= App.cdn_origin %>/mathml.css'
+    }
+
+    this.router = new Router();
+    this.shortcuts = new Shortcuts();
+    this.document = new Document();
+    this.document.init();
+    this.document.activate();
+
     if (this.isMobile()) {
-      this.mobile = new app.views.Mobile;
+      this.mobile = new Mobile();
     }
 
     if (document.body.hasAttribute('data-doc')) {
@@ -42,23 +99,23 @@ this.app = {
     } else {
       this.onBootError();
     }
-  },
+  }
 
   browserCheck() {
     if (this.isSupportedBrowser()) {
       return true;
     }
-    document.body.innerHTML = app.templates.unsupportedBrowser;
+    document.body.innerHTML = unsupportedBrowser();
     this.hideLoadingScreen();
     return false;
-  },
+  }
 
   initErrorTracking() {
     // Show a warning message and don't track errors when the app is loaded
     // from a domain other than our own, because things are likely to break.
     // (e.g. cross-domain requests)
     if (this.isInvalidLocation()) {
-      let notif = new app.views.Notif('InvalidLocation');
+      let notif = new Notif('InvalidLocation');
       notif.show();
     } else {
       if (this.config.sentry_dsn) {
@@ -86,12 +143,12 @@ this.app = {
           },
           dataCallback(data) {
             try {
-              $.extend(data.user || (data.user = {}), app.settings.dump());
+              $.extend(data.user || (data.user = {}), App.settings.dump());
               if (data.user.docs) {
                 data.user.docs = data.user.docs.split('/');
               }
-              if (app.lastIDBTransaction) {
-                data.user.lastIDBTransaction = app.lastIDBTransaction;
+              if (App.lastIDBTransaction) {
+                data.user.lastIDBTransaction = App.lastIDBTransaction;
               }
               data.tags.scriptCount = document.scripts.length;
             } catch (error) {}
@@ -103,17 +160,17 @@ this.app = {
       window.onerror = this.onWindowError.bind(this);
       CookieStore.onBlocked = this.onCookieBlocked;
     }
-  },
+  }
 
   bootOne() {
-    this.doc = new app.models.Doc(this.DOC);
+    this.doc = new Doc(this.DOC);
     this.docs.reset([this.doc]);
     this.doc.load(this.start.bind(this), this.onBootError.bind(this), {
       readCache: true
     });
-    new app.views.Notice('singleDoc', this.doc);
+    new Notice('singleDoc', this.doc);
     delete this.DOC;
-  },
+  }
 
   bootAll() {
     const docs = this.settings.getDocs();
@@ -126,7 +183,7 @@ this.app = {
       writeCache: true
     });
     delete this.DOCS;
-  },
+  }
 
   start() {
     for (var doc of this.docs.all()) {
@@ -147,14 +204,14 @@ this.app = {
       }
       return this.removeEvent('ready bootError');
     }, 50);
-  },
+  }
 
   initDoc(doc) {
     for (let type of doc.types.all()) {
       doc.entries.add(type.toEntry());
     }
     this.entries.add(doc.entries.all());
-  },
+  }
 
   migrateDocs() {
     let needsSaving;
@@ -185,7 +242,7 @@ this.app = {
     if (needsSaving) {
       this.saveDocs();
     }
-  },
+  }
 
   enableDoc(doc, _onSuccess, onError) {
     if (this.docs.contains(doc)) {
@@ -207,27 +264,27 @@ this.app = {
     doc.load(onSuccess, onError, {
       writeCache: true
     });
-  },
+  }
 
   saveDocs() {
     this.settings.setDocs(this.docs.all().map((doc) => doc.slug));
     this.db.migrate();
     return (this.appCache != null ? this.appCache.updateInBackground() : undefined);
-  },
+  }
 
   welcomeBack() {
     let visitCount = this.settings.get('count');
     this.settings.set('count', ++visitCount);
     if (visitCount === 5) {
-      let notif = new app.views.Notif('Share', {
+      let notif = new Notif('Share', {
         autoHide: null
       });
       notif.show();
     }
-    new app.views.News();
-    new app.views.Updates();
-    return this.updateChecker = new app.UpdateChecker();
-  },
+    new News();
+    new Updates();
+    return this.updateChecker = new UpdateChecker();
+  }
 
   reload() {
     this.docs.clearCache();
@@ -237,7 +294,7 @@ this.app = {
     } else {
       window.location = '/';
     }
-  },
+  }
 
   reset() {
     this.localStorage.reset();
@@ -249,8 +306,7 @@ this.app = {
       this.appCache.update();
     }
     window.location = '/';
-  },
-
+  }
   showTip(tip) {
     if (this.isSingleDoc()) {
       return;
@@ -259,45 +315,40 @@ this.app = {
     if (tips.indexOf(tip) === -1) {
       tips.push(tip);
       this.settings.setTips(tips);
-      new app.views.Tip(tip);
+      new Tip(tip);
     }
-  },
-
+  }
   hideLoadingScreen() {
     if ($.overlayScrollbarsEnabled()) {
       document.body.classList.add('_overlay-scrollbars');
     }
     document.documentElement.classList.remove('_booting');
-  },
-
+  }
   indexHost() {
     // Can't load the index files from the host/CDN when applicationCache is
     // enabled because it doesn't support caching URLs that use CORS.
     return this.config[this.appCache && this.settings.hasDocs() ? 'index_path' : 'docs_origin'];
-  },
-
+  }
   onBootError(...args) {
     this.trigger('bootError');
     this.hideLoadingScreen();
-  },
-
+  }
   onQuotaExceeded() {
     if (this.quotaExceeded) {
       return;
     }
     this.quotaExceeded = true;
-    let notif = new app.views.Notif('QuotaExceeded', {
+    let notif = new Notif('QuotaExceeded', {
       autoHide: null
     });
     notif.show();
-  },
-
+  }
   onCookieBlocked(key, value, actual) {
     if (this.cookieBlocked) {
       return;
     }
     this.cookieBlocked = true;
-    let notif = new app.views.Notif('CookieBlocked', {
+    let notif = new Notif('CookieBlocked', {
       autoHide: null
     });
     notif.show();
@@ -308,8 +359,7 @@ this.app = {
         actual
       }
     });
-  },
-
+  }
   onWindowError(...args) {
     if (this.cookieBlocked) {
       return;
@@ -322,12 +372,11 @@ this.app = {
       }
       this.hideLoadingScreen();
       if (!this.errorNotif) {
-        this.errorNotif = new app.views.Notif('Error');
+        this.errorNotif = new Notif('Error');
       }
       this.errorNotif.show();
     }
-  },
-
+  }
   onInjectionError() {
     if (!this.injectionError) {
       this.injectionError = true;
@@ -338,19 +387,16 @@ Please check your browser extensions/addons. `);
         level: 'info'
       });
     }
-  },
-
+  }
   isInjectionError() {
     // Some browser extensions expect the entire web to use jQuery.
     // I gave up trying to fight back.
-    return (window.$ !== app._$) || (window.$$ !== app._$$) || (window.page !== app._page) || (typeof $.empty !== 'function') || (typeof page.show !== 'function');
-  },
-
+    return (window.$ !== App._$) || (window.$$ !== App._$$) || (window.page !== App._page) || (typeof $.empty !== 'function') || (typeof page.show !== 'function');
+  }
   isAppError(error, file) {
     // Ignore errors from external scripts.
     return file && (file.indexOf('devdocs') !== -1) && (file.indexOf('.js') === (file.length - 3));
-  },
-
+  }
   isSupportedBrowser() {
     try {
       const features = {
@@ -382,24 +428,22 @@ Please check your browser extensions/addons. `);
       });
       return false;
     }
-  },
-
+  }
   isSingleDoc() {
     return document.body.hasAttribute('data-doc');
-  },
-
+  }
   isMobile() {
-    return this._isMobile != null ? this._isMobile : (this._isMobile = app.views.Mobile.detect());
-  },
-
+    return this._isMobile != null ? this._isMobile : (this._isMobile = Mobile.detect());
+  }
   isAndroidWebview() {
-    return this._isAndroidWebview != null ? this._isAndroidWebview : (this._isAndroidWebview = app.views.Mobile.detectAndroidWebview());
-  },
-
+    return this._isAndroidWebview != null ? this._isAndroidWebview : (this._isAndroidWebview = Mobile.detectAndroidWebview());
+  }
   isInvalidLocation() {
-    return (this.config.env === 'production') && (location.host.indexOf(app.config.production_host) !== 0);
+    return (this.config.env === 'production') && (location.host.indexOf(this.config.production_host) !== 0);
   }
 };
+
+$.extend(App_.prototype, Events);
 
 var supportsCssGradients = function () {
   const el = document.createElement('div');
@@ -407,4 +451,4 @@ var supportsCssGradients = function () {
   return el.style.backgroundImage.indexOf('gradient') >= 0;
 };
 
-$.extend(app, Events);
+export let App = new App_();

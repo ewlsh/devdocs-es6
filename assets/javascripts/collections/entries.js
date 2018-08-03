@@ -1,7 +1,5 @@
-app.collections.Entries = class Entries extends app.Collection {
-  static initClass() {
-    this.model = 'Entry';
+import Collection from './collection'
 
-    return this;
-  }
-}.initClass();
+export default class Entries extends Collection {
+  static model = 'Entry';
+}

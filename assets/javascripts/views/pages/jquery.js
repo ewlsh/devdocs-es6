@@ -1,17 +1,13 @@
-require('./base');
+import BasePage from './base';
 
-app.views.JqueryPage = class JqueryPage extends app.views.BasePage {
+export default class JqueryPage extends BasePage {
   constructor(...args) {
     super(...args);
     this.onIframeLoaded = this.onIframeLoaded.bind(this);
 
   }
 
-  static initClass() {
-    this.demoClassName = '_jquery-demo';
-
-    return this;
-  }
+  static demoClassName = '_jquery-demo';
 
   afterRender() {
     // Prevent jQuery Mobile's demo iframes from scrolling the page
@@ -75,4 +71,4 @@ app.views.JqueryPage = class JqueryPage extends app.views.BasePage {
 `);
     return source.replace(/<script>/gi, '<script nonce="devdocs">');
   }
-}.initClass();
+}

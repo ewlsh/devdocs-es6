@@ -1,9 +1,12 @@
-app.views.TypePage = class TypePage extends app.View {
-  static initClass() {
-    this.className = '_page';
+import View from '../view';
 
-    return this;
-  }
+import {
+  typePage
+} from '../../templates/pages/type_tmpl';
+
+export default class TypePage extends View {
+
+  static className = '_page';
 
   deactivate() {
     if (super.deactivate(...arguments)) {
@@ -14,7 +17,7 @@ app.views.TypePage = class TypePage extends app.View {
 
   render(type) {
     this.type = type;
-    this.html(this.tmpl('typePage', this.type));
+    this.html(typePage(this.type));
   }
 
   getTitle() {
@@ -24,4 +27,4 @@ app.views.TypePage = class TypePage extends app.View {
   onRoute(context) {
     this.render(context.type);
   }
-}.initClass();
+}

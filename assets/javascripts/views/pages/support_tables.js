@@ -1,13 +1,10 @@
-require('./base');
+import BasePage from './base';
 
-app.views.SupportTablesPage = class SupportTablesPage extends app.views.BasePage {
-  static initClass() {
-    this.events = {
-      click: 'onClick'
-    };
 
-    return this;
-  }
+export default class SupportTablesPage extends BasePage {
+  static events = {
+    click: 'onClick'
+  };
 
   onClick(event) {
     if (!event.target.classList.contains('show-all')) {
@@ -21,4 +18,4 @@ app.views.SupportTablesPage = class SupportTablesPage extends app.views.BasePage
     }
     el.classList.add('show-all');
   }
-}.initClass();
+}

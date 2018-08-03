@@ -1,9 +1,9 @@
 //
 // Traversing
 //
-{
+export default function util() {
   let smoothDistance, smoothDuration, smoothEnd, smoothStart;
-  this.$ = function (selector, el) {
+  window.$ = function (selector, el) {
     if (el == null) {
       el = document;
     }
@@ -12,7 +12,7 @@
     } catch (error) {}
   };
 
-  this.$$ = function (selector, el) {
+  window.$$ = function (selector, el) {
     if (el == null) {
       el = document;
     }

@@ -1,4 +1,11 @@
-app.views.Sidebar = class Sidebar extends app.View {
+import View from '../view'
+import Search from '../search/search';
+import SidebarHover from './sidebar_hover';
+import Results from './results';
+import DocList from './doc_list';
+import { App } from '../../app/app';
+
+export default class Sidebar extends View {
   constructor(...args) {
     super(...args);
 
@@ -16,10 +23,10 @@ app.views.Sidebar = class Sidebar extends app.View {
     this.onEscape = this.onEscape.bind(this);
     this.afterRoute = this.afterRoute.bind(this);
 
-    if (!app.isMobile()) {
-      this.addSubview(this.hover = new app.views.SidebarHover(this.el));
+    if (!App.isMobile()) {
+      this.addSubview(this.hover = new SidebarHover(this.el));
     }
-    this.addSubview(this.search = new app.views.Search);
+    this.addSubview(this.search = new Search);
 
     this.search
       .on('searching', this.onSearching)
@@ -27,10 +34,10 @@ app.views.Sidebar = class Sidebar extends app.View {
       .scope
       .on('change', this.onScopeChange);
 
-    this.results = new app.views.Results(this, this.search);
-    this.docList = new app.views.DocList;
+    this.results = new Results(this, this.search);
+    this.docList = new DocList;
 
-    app.on('ready', this.onReady);
+    App.on('ready', this.onReady);
 
     $.on(document.documentElement, 'mouseleave', event => {
       if (event.clientX < 10) {
@@ -42,26 +49,24 @@ app.views.Sidebar = class Sidebar extends app.View {
     }));
   }
 
-  static initClass() {
-    this.el = '._sidebar';
 
-    this.events = {
-      focus: 'onFocus',
-      select: 'onSelect',
-      click: 'onClick'
-    };
+  static el = '._sidebar';
 
-    this.routes = {
-      after: 'afterRoute'
-    };
+  static events = {
+    focus: 'onFocus',
+    select: 'onSelect',
+    click: 'onClick'
+  };
 
-    this.shortcuts = {
-      altR: 'onAltR',
-      escape: 'onEscape'
-    };
+  static routes = {
+    after: 'afterRoute'
+  };
 
-    return this;
-  }
+  static shortcuts = {
+    altR: 'onAltR',
+    escape: 'onEscape'
+  };
+
 
   display() {
     this.addClass('show');
@@ -224,12 +229,12 @@ app.views.Sidebar = class Sidebar extends app.View {
   }
 
   afterRoute(name, context) {
-    if ((app.shortcuts.eventInProgress != null ? app.shortcuts.eventInProgress.name : undefined) === 'escape') {
+    if ((App.shortcuts.eventInProgress != null ? App.shortcuts.eventInProgress.name : undefined) === 'escape') {
       return;
     }
-    if (!context.init && app.router.isIndex()) {
+    if (!context.init && App.router.isIndex()) {
       this.reset();
     }
     this.resetDisplay();
   }
-}.initClass();
+}

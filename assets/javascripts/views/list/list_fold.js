@@ -1,20 +1,21 @@
-app.views.ListFold = class ListFold extends app.View {
-  static initClass() {
-    this.targetClass = '_list-dir';
-    this.handleClass = '_list-arrow';
-    this.activeClass = 'open';
+import View from '../view';
+import ListSelect from './list_select';
+import ListFocus from './list_focus';
 
-    this.events = {
-      click: 'onClick'
-    };
+export default class ListFold extends View {
 
-    this.shortcuts = {
-      left: 'onLeft',
-      right: 'onRight'
-    };
+  static targetClass = '_list-dir';
+  static handleClass = '_list-arrow';
+  static activeClass = 'open';
 
-    return this;
-  }
+  static events = {
+    click: 'onClick'
+  };
+
+  static shortcuts = {
+    left: 'onLeft',
+    right: 'onRight'
+  };
 
   constructor(el) {
     super(...arguments);
@@ -55,7 +56,7 @@ app.views.ListFold = class ListFold extends app.View {
   }
 
   getCursor() {
-    return this.findByClass(app.views.ListFocus.activeClass) || this.findByClass(app.views.ListSelect.activeClass);
+    return this.findByClass(ListFocus.activeClass) || this.findByClass(ListSelect.activeClass);
   }
 
   onLeft() {
@@ -90,7 +91,7 @@ app.views.ListFold = class ListFold extends app.View {
     } else if (el.classList.contains(this.constructor.targetClass)) {
       if (el.hasAttribute('href')) {
         if (el.classList.contains(this.constructor.activeClass)) {
-          if (el.classList.contains(app.views.ListSelect.activeClass)) {
+          if (el.classList.contains(ListSelect.activeClass)) {
             this.close(el);
           }
         } else {
@@ -101,4 +102,4 @@ app.views.ListFold = class ListFold extends app.View {
       }
     }
   }
-}.initClass();
+}

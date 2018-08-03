@@ -1,4 +1,7 @@
-app.views.Menu = class Menu extends app.View {
+import View from '../view';
+
+
+export default class Menu extends View {
   constructor(...args) {
     super(...args);
 
@@ -6,16 +9,12 @@ app.views.Menu = class Menu extends app.View {
     $.on(document.body, 'click', this.onGlobalClick);
   }
 
-  static initClass() {
-    this.el = '._menu';
-    this.activeClass = 'active';
+  static el = '._menu';
+  static activeClass = 'active';
 
-    this.events = {
-      click: 'onClick'
-    };
-
-    return this;
-  }
+  static events = {
+    click: 'onClick'
+  };
 
   onClick(event) {
     const target = $.eventTarget(event);
@@ -34,4 +33,4 @@ app.views.Menu = class Menu extends app.View {
       this.removeClass(this.constructor.activeClass);
     }
   }
-}.initClass();
+}

@@ -1,10 +1,14 @@
 // TODO This was an erb template
 
-app.templates.splash = "<div class=\"_splash-title\">DevDocs</div>";
+import {
+  addTemplates
+} from '../base';
+
+export let splash = "<div class=\"_splash-title\">DevDocs</div>";
 
 // TODO
-//<% if App.development? %>
-app.templates.intro = `\
+//<% if App.development? %> // TODO should export INTRO too
+let test = `\
 <div class="_intro"><div class="_intro-message">
   <a href="#" class="_intro-hide" data-hide-intro>Stop showing this message</a>
   <h2 class="_intro-title">Hi there!</h2>
@@ -28,7 +32,7 @@ app.templates.intro = `\
 `;
 // TODO
 //<% else %>
-app.templates.intro = `\
+export let intro = `\
 <div class="_intro"><div class="_intro-message">
   <a href="#" class="_intro-hide" data-hide-intro>Stop showing this message</a>
   <h2 class="_intro-title">Welcome!</h2>
@@ -52,7 +56,7 @@ app.templates.intro = `\
 // TODO
 //<% end %>
 
-app.templates.mobileIntro = `\
+export let mobileIntro = `\
 <div class="_mobile-intro">
   <h2 class="_intro-title">Welcome!</h2>
   <p>DevDocs combines multiple API documentations in a fast, organized, and searchable interface.
@@ -69,7 +73,7 @@ app.templates.mobileIntro = `\
 </div>\
 `;
 
-app.templates.androidWarning = `\
+export let androidWarning = `\
 <div class="_mobile-intro">
   <h2 class="_intro-title">Hi there</h2>
   <p>DevDocs is running inside an Android WebView. Some features may not work properly.
@@ -78,7 +82,7 @@ app.templates.androidWarning = `\
 </div>\
 `;
 
-app.templates.httpWarning = `\
+export let httpWarning = `\
 <div class="_intro"><div class="_intro-message">
   <h2 class="_intro-title">Hi there!</h2>
   <p>DevDocs is migrating to HTTPS.
@@ -88,3 +92,11 @@ app.templates.httpWarning = `\
   <p>Thanks for using DevDocs, and happy coding!
 </div></div>\
 `;
+
+addTemplates({
+  splash,
+  httpWarning,
+  androidWarning,
+  mobileIntro,
+  intro
+});

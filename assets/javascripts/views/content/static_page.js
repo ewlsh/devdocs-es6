@@ -1,16 +1,16 @@
-app.views.StaticPage = class StaticPage extends app.View {
-  static initClass() {
-    this.className = '_static';
+import View from '../view';
 
-    this.titles = {
-      about: 'About',
-      news: 'News',
-      help: 'User Guide',
-      notFound: '404'
-    };
 
-    return this;
-  }
+export default class StaticPage extends View {
+
+  static className = '_static';
+
+  static titles = {
+    about: 'About',
+    news: 'News',
+    help: 'User Guide',
+    notFound: '404'
+  };
 
   deactivate() {
     if (super.deactivate(...arguments)) {
@@ -31,4 +31,4 @@ app.views.StaticPage = class StaticPage extends app.View {
   onRoute(context) {
     this.render(context.page || 'notFound');
   }
-}.initClass();
+}

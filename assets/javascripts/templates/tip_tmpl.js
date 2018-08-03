@@ -1,4 +1,8 @@
-app.templates.tipKeyNav = `\
+import {
+  addTemplates
+} from './base';
+
+export let tipKeyNav = `\
 <p class="_notif-text">
   <strong>ProTip</strong>
   <span class="_notif-info">(click to dismiss)</span>
@@ -8,3 +12,7 @@ app.templates.tipKeyNav = `\
 <p class="_notif-text">
   <a href="/help#shortcuts" class="_notif-link">See all keyboard shortcuts</a>\
 `;
+
+addTemplates({
+  tipKeyNav
+});

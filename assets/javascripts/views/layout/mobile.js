@@ -1,24 +1,24 @@
-app.views.Mobile = class Mobile extends app.View {
-  static initClass() {
-    this.className = '_mobile';
+import View from '../view';
+import ListFold from '../list/list_fold';
+import ListSelect from '../list/list_select';
 
-    this.elements = {
-      body: 'body',
-      content: '._container',
-      sidebar: '._sidebar',
-      docPicker: '._settings ._sidebar'
-    };
+export default class Mobile extends View {
+  static className = '_mobile';
 
-    this.shortcuts = {
-      escape: 'onEscape'
-    };
+  static elements = {
+    body: 'body',
+    content: '._container',
+    sidebar: '._sidebar',
+    docPicker: '._settings ._sidebar'
+  };
 
-    this.routes = {
-      after: 'afterRoute'
-    };
+  static shortcuts = {
+    escape: 'onEscape'
+  };
 
-    return this;
-  }
+  static routes = {
+    after: 'afterRoute'
+  };
 
   static detect() {
     try {
@@ -83,7 +83,7 @@ app.views.Mobile = class Mobile extends app.View {
     this.settingsTab.removeAttribute('hidden');
     $.on(this.settingsTab, 'click', this.onClickSettingsTab);
 
-    app.document.sidebar.search
+    App.document.sidebar.search
       .on('searching', this.showSidebar);
 
     this.activate();
@@ -100,11 +100,11 @@ app.views.Mobile = class Mobile extends app.View {
     this.content.style.display = 'none';
     this.sidebar.style.display = 'block';
 
-    if (selection = this.findByClass(app.views.ListSelect.activeClass)) {
+    if (selection = this.findByClass(ListSelect.activeClass)) {
       const scrollContainer = window.scrollY === this.body.scrollTop ? this.body : document.documentElement;
       $.scrollTo(selection, scrollContainer, 'center');
     } else {
-      window.scrollTo(0, (this.findByClass(app.views.ListFold.activeClass) && this.sidebarTop) || 0);
+      window.scrollTo(0, (this.findByClass(ListFold.activeClass) && this.sidebarTop) || 0);
     }
   }
 
@@ -193,4 +193,4 @@ app.views.Mobile = class Mobile extends app.View {
       this.forward.setAttribute('disabled', 'disabled');
     }
   }
-}.initClass();
+}

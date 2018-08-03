@@ -1,4 +1,6 @@
-this.Events = {
+let Events;
+
+export default Events = {
   on(event, callback) {
     if (event.indexOf(' ') >= 0) {
       for (let name of event.split(' ')) {
