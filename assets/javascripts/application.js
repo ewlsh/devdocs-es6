@@ -1,24 +1,23 @@
-//= require_tree ./vendor
+require('./lib/license');
+require('./app/app');
+require('./app/config');
+require('./collections/collection');
+require('./models/model');
+require('./views/view');
+require('./tracking');
 
-//= require lib/license
-//= require_tree ./lib
+function requireAll(r) {
+  r.keys().forEach(r);
+}
 
-//= require app/app
-//= require app/config
-//= require_tree ./app
+requireAll(require.context('./lib/', true, /\.js$/));
+requireAll(require.context('./views/', true, /\.js$/));
+requireAll(require.context('./templates/', true, /\.js$/));
+requireAll(require.context('./models/', true, /\.js$/));
+requireAll(require.context('./collections/', true, /\.js$/));
+requireAll(require.context('./app/', true, /\.js$/));
+requireAll(require.context('./vendor/', true, /\.js$/));
 
-//= require collections/collection
-//= require_tree ./collections
-
-//= require models/model
-//= require_tree ./models
-
-//= require views/view
-//= require_tree ./views
-
-//= require_tree ./templates
-
-//= require tracking
 
 var init = function () {
   document.removeEventListener('DOMContentLoaded', init, false);

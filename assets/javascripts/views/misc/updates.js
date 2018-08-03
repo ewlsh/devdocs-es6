@@ -1,4 +1,4 @@
-//= require views/misc/notif
+require('../misc/notif');
 
 app.views.Updates = class Updates extends app.views.Notif {
   static initClass() {

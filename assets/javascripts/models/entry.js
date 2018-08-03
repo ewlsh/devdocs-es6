@@ -1,4 +1,4 @@
-//= require app/searcher
+require('../app/searcher');
 
 (function () {
   let applyAliases = undefined;

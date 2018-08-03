@@ -1,4 +1,4 @@
-//= require views/pages/base
+require('./base');
 
 app.views.SqlitePage = class SqlitePage extends app.views.BasePage {
   constructor(...args) {

@@ -1,4 +1,4 @@
-//= require views/misc/notif
+require('../misc/notif');
 
 app.views.Tip = class Tip extends app.views.Notif {
   static initClass() {

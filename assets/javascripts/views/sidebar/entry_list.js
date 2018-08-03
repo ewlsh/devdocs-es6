@@ -1,4 +1,4 @@
-//= require views/list/paginated_list
+require('../list/paginated_list');
 
 app.views.EntryList = class EntryList extends app.views.PaginatedList {
   static initClass() {

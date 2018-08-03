@@ -1,4 +1,4 @@
-//= require views/pages/base
+require('./base');
 
 app.views.JqueryPage = class JqueryPage extends app.views.BasePage {
   constructor(...args) {

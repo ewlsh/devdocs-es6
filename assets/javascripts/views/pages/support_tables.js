@@ -1,4 +1,4 @@
-//= require views/pages/base
+require('./base');
 
 app.views.SupportTablesPage = class SupportTablesPage extends app.views.BasePage {
   static initClass() {

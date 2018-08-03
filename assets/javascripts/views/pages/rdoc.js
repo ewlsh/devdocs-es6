@@ -1,4 +1,4 @@
-//= require views/pages/base
+require('./base');
 
 app.views.RdocPage = class RdocPage extends app.views.BasePage {
   static initClass() {
