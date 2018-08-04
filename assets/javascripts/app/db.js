@@ -1,5 +1,5 @@
 import {App} from './app';
-
+import {ajax} from '../lib/ajax';
 export default class DB {
     static NAME = 'docs';
     static VERSION = 15;

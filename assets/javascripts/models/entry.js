@@ -1,16 +1,18 @@
 import Model from './model';
-import Searcher from '../app/searcher';
-
+import { Searcher } from '../app/searcher';
+import {
+  App
+} from '../app/app';
 export default class Entry extends Model {
   static applyAliases(string) {
-    if (ALIASES.hasOwnProperty(string)) {
-      return [string, ALIASES[string]];
+    if (this.ALIASES.hasOwnProperty(string)) {
+      return [string, this.ALIASES[string]];
     } else {
       const words = string.split('.');
       for (let i = 0; i < words.length; i++) {
         const word = words[i];
-        if (ALIASES.hasOwnProperty(word)) {
-          words[i] = ALIASES[word];
+        if (this.ALIASES.hasOwnProperty(word)) {
+          words[i] = this.ALIASES[word];
           return [string, words.join('.')];
         }
       }

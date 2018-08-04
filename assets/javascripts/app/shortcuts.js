@@ -1,6 +1,8 @@
 import Util from '../lib/util';
 import Events from '../lib/events';
-
+import {
+  App
+} from './app';
 Util();
 
 export default class Shortcuts {

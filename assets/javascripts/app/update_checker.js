@@ -1,4 +1,8 @@
 import Notif from '../views/misc/notif';
+import {ajax} from '../lib/ajax';
+import {
+  App
+} from './app';
 
 export default class UpdateChecker {
   constructor() {

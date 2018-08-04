@@ -154,18 +154,18 @@ export class Searcher {
   static normalizeString(string) {
     return string
       .toLowerCase()
-      .replace(ELLIPSIS, EMPTY_STRING)
-      .replace(EVENT_REGEXP, EMPTY_STRING)
-      .replace(INFO_PARANTHESES_REGEXP, EMPTY_STRING)
-      .replace(SEPARATORS_REGEXP, SEPARATOR)
-      .replace(DOT_REGEXP, SEPARATOR)
-      .replace(EMPTY_PARANTHESES_REGEXP, EMPTY_STRING)
-      .replace(WHITESPACE_REGEXP, EMPTY_STRING);
+      .replace(Searcher.ELLIPSIS, Searcher.EMPTY_STRING)
+      .replace(Searcher.EVENT_REGEXP, Searcher.EMPTY_STRING)
+      .replace(Searcher.INFO_PARANTHESES_REGEXP, Searcher.EMPTY_STRING)
+      .replace(Searcher.SEPARATORS_REGEXP, Searcher.SEPARATOR)
+      .replace(Searcher.DOT_REGEXP, Searcher.SEPARATOR)
+      .replace(Searcher.EMPTY_PARANTHESES_REGEXP, Searcher.EMPTY_STRING)
+      .replace(Searcher.WHITESPACE_REGEXP, Searcher.EMPTY_STRING);
   }
 
   static normalizeQuery(string) {
     string = this.normalizeString(string);
-    return string.replace(EOS_SEPARATORS_REGEXP, '$1.');
+    return string.replace(Searcher.EOS_SEPARATORS_REGEXP, '$1.');
   }
 
   constructor(options) {
@@ -211,7 +211,7 @@ export class Searcher {
   }
 
   isValid() {
-    return (queryLength > 0) && (query !== SEPARATOR);
+    return (queryLength > 0) && (query !== Searcher.SEPARATOR);
   }
 
   end() {
@@ -285,10 +285,10 @@ export class Searcher {
   }
 
   chunkSize() {
-    if ((this.cursor + CHUNK_SIZE) > this.dataLength) {
-      return this.dataLength % CHUNK_SIZE;
+    if ((this.cursor + Searcher.CHUNK_SIZE) > this.dataLength) {
+      return this.dataLength % Searcher.CHUNK_SIZE;
     } else {
-      return CHUNK_SIZE;
+      return Searcher.CHUNK_SIZE;
     }
   }
 

@@ -1,5 +1,7 @@
 import Model from '../models/model';
-import { App } from '../app/app';
+import {
+  App
+} from '../app/app';
 
 export default class Collection {
   constructor(objects) {
@@ -10,7 +12,7 @@ export default class Collection {
   }
 
   model() {
-    return App.models[this.constructor.model];
+    return null;
   }
 
   reset(objects) {

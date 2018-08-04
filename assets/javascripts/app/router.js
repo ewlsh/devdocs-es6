@@ -3,7 +3,7 @@ import Events from '../lib/events';
 import page from '../lib/page';
 
 import Cookies from '../vendor/cookies';
-import App from './app';
+import { App } from './app';
 Util();
 
 export default class Router {

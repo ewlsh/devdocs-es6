@@ -1,7 +1,9 @@
 import { App } from '../app/app';
 import Entry from './entry';
-
+import {ajax} from '../lib/ajax';
 import Model from './model';
+import Entries from '../collections/entries';
+import Types from '../collections/types';
 
 export default class Doc extends Model {
   // Attributes: name, slug, type, version, release, db_size, mtime, links

@@ -1,5 +1,13 @@
 import Collection from './collection'
 
+import Entry from '../models/entry';
+
 export default class Entries extends Collection {
-  static model = 'Entry';
+  constructor(...args) {
+    super(...args);
+  }
+
+  model() {
+    return Entry;
+  }
 }

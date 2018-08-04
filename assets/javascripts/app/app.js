@@ -22,7 +22,7 @@ import Events from '../lib/events';
 
 import page from '../lib/page';
 
-
+import APP_DOCS from '../docs.js';
 
 import Util from '../lib/util';
 
@@ -64,6 +64,8 @@ class App_ {
     this.disabledDocs = new Docs;
     this.entries = new Entries;
 
+    this.news = [[]];
+
     this.config = {
       db_filename: 'db.json',
       default_docs: "<%= App.default_docs.to_json %>",
@@ -92,9 +94,9 @@ class App_ {
     }
 
     if (document.body.hasAttribute('data-doc')) {
-      this.DOC = JSON.parse(document.body.getAttribute('data-doc'));
+      App.docs = JSON.parse(document.body.getAttribute('data-doc'));
       this.bootOne();
-    } else if (this.DOCS) {
+    } else if (APP_DOCS) {
       this.bootAll();
     } else {
       this.onBootError();
@@ -174,7 +176,7 @@ class App_ {
 
   bootAll() {
     const docs = this.settings.getDocs();
-    for (let doc of this.DOCS) {
+    for (let doc of APP_DOCS) {
       (docs.indexOf(doc.slug) >= 0 ? this.docs : this.disabledDocs).add(doc);
     }
     this.migrateDocs();
@@ -182,7 +184,7 @@ class App_ {
       readCache: true,
       writeCache: true
     });
-    delete this.DOCS;
+    //delete window.APP_DOCS;
   }
 
   start() {

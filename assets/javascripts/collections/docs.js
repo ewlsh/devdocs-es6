@@ -1,5 +1,11 @@
   import Collection from './collection'
-  
+
+  import Doc from '../models/doc';
+
+  import {
+    App
+  } from '../app/app';
+
   export default class Docs extends Collection {
     static NORMALIZE_VERSION_RGX = /\.(\d)$/;
     static NORMALIZE_VERSION_SUB = '.0$1';
@@ -7,7 +13,14 @@
     // Load models concurrently.
     // It's not pretty but I didn't want to import a promise library only for this.
     static CONCURRENCY = 3;
-    static model = 'Doc';
+
+    constructor(...args) {
+      super(...args);
+    }
+
+    model() {
+      return Doc;
+    }
 
     findBySlug(slug) {
       return this.findBy('slug', slug) || this.findBy('slug_without_version', slug);
@@ -33,7 +46,7 @@
       var next = () => {
         if (i < this.models.length) {
           this.models[i].load(next, fail, options);
-        } else if (i === ((this.models.length + CONCURRENCY) - 1)) {
+        } else if (i === ((this.models.length + Docs.CONCURRENCY) - 1)) {
           onComplete();
         }
         i++;
@@ -47,7 +60,7 @@
         next();
       };
 
-      for (let j = 0, end = CONCURRENCY, asc = 0 <= end; asc ? j < end : j > end; asc ? j++ : j--) {
+      for (let j = 0, end = Docs.CONCURRENCY, asc = 0 <= end; asc ? j < end : j > end; asc ? j++ : j--) {
         next();
       }
     }

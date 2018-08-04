@@ -46,7 +46,7 @@ export default (page = function page(value, fn) {
     if (path === (currentState != null ? currentState.path : undefined)) {
       return;
     }
-    const context = new Context(path, state);
+    const context = new page._Context(path, state);
     const previousState = currentState;
     currentState = context.state;
     if (res = page.dispatch(context)) {
@@ -62,14 +62,14 @@ export default (page = function page(value, fn) {
 
   page.replace = function (path, state, skipDispatch, init) {
     let result;
-    let context = new Context(path, state || currentState);
+    let context = new page._Context(path, state || currentState);
     context.init = init;
     currentState = context.state;
     if (!skipDispatch) {
       result = page.dispatch(context);
     }
     if (result) {
-      context = new Context(result);
+      context = new page._Context(result);
       context.init = init;
       currentState = context.state;
       page.dispatch(context);
@@ -278,10 +278,10 @@ export default (page = function page(value, fn) {
   var isSameOrigin = url => url.indexOf(`${location.protocol}//${location.hostname}`) === 0;
 
   var updateCanonicalLink = function () {
-    if (!this.canonicalLink) {
-      this.canonicalLink = document.head.querySelector('link[rel="canonical"]');
+    if (!page._canonicalLink) {
+      page._canonicalLink = document.head.querySelector('link[rel="canonical"]');
     }
-    return this.canonicalLink.setAttribute('href', `http://${location.host}${location.pathname}`);
+    return page._canonicalLink.setAttribute('href', `http://${location.host}${location.pathname}`);
   };
 
   const trackers = [];

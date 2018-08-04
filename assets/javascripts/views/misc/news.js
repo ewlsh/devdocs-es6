@@ -1,6 +1,8 @@
 import Notif from '../misc/notif';
 import { notifNews } from '../../templates/notif_tmpl';
 
+import {App} from '../../app/app';
+
 export default class News extends Notif {
   static className = News.className + ' _notif-news';
 

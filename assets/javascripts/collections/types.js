@@ -1,11 +1,19 @@
 import Collection from './collection';
 
-export default class Types extends Collection {
+import Type from '../models/type';
 
-  static model = 'Type';
+export default class Types extends Collection {
 
   static GUIDES_RGX = /(^|\()(guides?|tutorials?|reference|book|getting\ started|manual|examples)($|[\):])/i;
   static APPENDIX_RGX = /appendix/i;
+
+  constructor(...args) {
+    super(...args);
+  }
+
+  model() {
+    return Type;
+  }
 
   groups() {
     const result = [];

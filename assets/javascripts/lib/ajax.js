@@ -1,4 +1,4 @@
-export default function ajax(options) {
+export function ajax(options) {
   applyDefaults(options);
   serializeData(options);
 
